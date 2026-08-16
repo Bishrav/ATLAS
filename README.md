@@ -6,7 +6,7 @@ weighted graph algorithms, dynamic routing, and vehicle-routing experiments.
 ## Current status
 
 Phase 0 foundation is in progress. The repository currently contains a CMake
-build, a versioned core library, a minimal CLI, and a baseline test. Routing
+build, a versioned core library, a validated in-memory graph contract, a minimal CLI, and a baseline test. Routing
 algorithms, graph ingestion, benchmarks, dynamic updates, and VRP optimization
 are planned and are not yet implemented.
 

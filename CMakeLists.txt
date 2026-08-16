@@ -8,7 +8,10 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_library(atlas_core src/atlas/core.cpp)
+add_library(atlas_core
+    src/atlas/core.cpp
+    src/atlas/graph.cpp
+)
 target_include_directories(atlas_core PUBLIC include)
 target_compile_features(atlas_core PUBLIC cxx_std_20)
 
