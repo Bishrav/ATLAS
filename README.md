@@ -5,8 +5,8 @@ weighted graph algorithms. It is being built as an algorithm-first portfolio
 project: graph correctness, route reconstruction, reproducible evaluation, and
 measured tradeoffs come before databases, hosted APIs, or a map UI.
 
-> Current status: **Research Prototype — Phase 4 benchmarking and evaluation
-> implemented; Phase 5 dynamic routing planned.**
+> Current status: **Research Prototype — Phase 5 dynamic routing and caching
+> in progress.**
 
 ## Project identity
 
@@ -37,6 +37,7 @@ route caching, map data ingestion, VRP optimization, a network API, or a UI.
 - Nodes-expanded and priority-queue-push metrics
 - Benchmark comparison against Dijkstra baseline costs
 - Optional benchmark regression comparison against caller-supplied baselines
+- Versioned dynamic edge-weight updates and edge closures
 
 ## What is not implemented
 
@@ -83,7 +84,7 @@ flowchart LR
 | Traversal layer | BFS and DFS order from a start node | Implemented |
 | Path engine | Dijkstra, A*, bidirectional Dijkstra, route reconstruction | Implemented |
 | Benchmark layer | Fixed workload, buckets, correctness, local metrics | Implemented |
-| Dynamic routing | Edge updates, closures, graph revisions, invalidation | Planned |
+| Dynamic routing | Edge updates, closures, graph revisions | Partially implemented |
 | Optimization | TSP/VRP constraints and heuristics | Planned |
 | Delivery layer | REST/gRPC, storage, cache, UI | Planned |
 
@@ -263,8 +264,9 @@ environment metadata before using regression thresholds.
 
 ### Phase 5 — Dynamic routing and caching
 
-Planned work includes edge-weight and closure events, graph revisions, route
-cache keys, invalidation, and replayable update tests.
+The first dynamic-routing slice now supports validated edge-weight updates and
+edge closures. Each successful graph mutation increments a monotonic in-memory
+revision. Route-cache keys and invalidation remain planned.
 
 ### Phase 6 — Advanced preprocessing
 

@@ -209,5 +209,25 @@ int main() {
         std::cerr << "Bidirectional unreachable result is incorrect\n";
         return 1;
     }
+    atlas::Graph dynamic_graph(3);
+    dynamic_graph.add_edge(0, 1, 5.0);
+    dynamic_graph.add_edge(1, 2, 5.0);
+    const auto initial_revision = dynamic_graph.revision();
+    dynamic_graph.update_edge_weight(0, 1, 1.0);
+    if (dynamic_graph.revision() != initial_revision + 1 ||
+        dynamic_graph.neighbors(0)[0].weight != 1.0) {
+        std::cerr << "Dynamic edge weight update is incorrect\n";
+        return 1;
+    }
+    dynamic_graph.remove_edge(1, 2);
+    if (dynamic_graph.edge_count() != 1 || dynamic_graph.revision() != initial_revision + 2) {
+        std::cerr << "Dynamic edge removal is incorrect\n";
+        return 1;
+    }
+    try {
+        dynamic_graph.update_edge_weight(1, 2, 2.0);
+        return 1;
+    } catch (const atlas::GraphError&) {
+    }
     return 0;
 }

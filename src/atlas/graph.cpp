@@ -40,6 +40,40 @@ void Graph::add_edge(NodeId from, NodeId to, double weight) {
     }
     adjacency_[from].push_back({to, weight});
     ++edge_count_;
+    ++revision_;
+}
+
+void Graph::update_edge_weight(NodeId from, NodeId to, double weight) {
+    if (!contains(from) || !contains(to)) {
+        throw GraphError("edge endpoint does not exist");
+    }
+    if (!std::isfinite(weight) || weight < 0.0) {
+        throw GraphError("edge weight must be finite and non-negative");
+    }
+    for (Edge& edge : adjacency_[from]) {
+        if (edge.to == to) {
+            edge.weight = weight;
+            ++revision_;
+            return;
+        }
+    }
+    throw GraphError("edge does not exist");
+}
+
+void Graph::remove_edge(NodeId from, NodeId to) {
+    if (!contains(from) || !contains(to)) {
+        throw GraphError("edge endpoint does not exist");
+    }
+    auto& edges = adjacency_[from];
+    for (auto edge = edges.begin(); edge != edges.end(); ++edge) {
+        if (edge->to == to) {
+            edges.erase(edge);
+            --edge_count_;
+            ++revision_;
+            return;
+        }
+    }
+    throw GraphError("edge does not exist");
 }
 
 bool Graph::contains(NodeId id) const noexcept {
@@ -62,6 +96,10 @@ std::size_t Graph::estimated_memory_bytes() const noexcept {
         bytes += edges.capacity() * sizeof(Edge);
     }
     return bytes;
+}
+
+std::uint64_t Graph::revision() const noexcept {
+    return revision_;
 }
 
 const std::vector<Edge>& Graph::neighbors(NodeId from) const {
