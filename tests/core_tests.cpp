@@ -4,6 +4,7 @@
 #include "atlas/core.hpp"
 #include "atlas/graph.hpp"
 #include "atlas/graph_io.hpp"
+#include "atlas/traversal.hpp"
 
 int main() {
     if (atlas::version() != "0.1.0") {
@@ -41,6 +42,13 @@ int main() {
         if (std::string(error.what()).find("line 2") == std::string::npos) {
             return 1;
         }
+    }
+    const auto breadth_first = atlas::breadth_first_order(parsed, 0);
+    const auto depth_first = atlas::depth_first_order(parsed, 0);
+    if (breadth_first != std::vector<atlas::NodeId>{0, 1} ||
+        depth_first != std::vector<atlas::NodeId>{0, 1}) {
+        std::cerr << "Traversal order is incorrect\n";
+        return 1;
     }
     return 0;
 }
