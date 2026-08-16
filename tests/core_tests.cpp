@@ -10,6 +10,7 @@
 #include "atlas/graph_io.hpp"
 #include "atlas/traversal.hpp"
 #include "atlas/shortest_path.hpp"
+#include "atlas/a_star.hpp"
 
 namespace {
 
@@ -123,12 +124,35 @@ int main() {
         for (atlas::NodeId goal = 0; goal < random_node_count; ++goal) {
             const auto actual = atlas::dijkstra(random_graph, start, goal);
             const double expected = oracle_distance(random_graph, start, goal);
-            if (std::isinf(expected) != !actual.reachable ||
+    if (std::isinf(expected) != !actual.reachable ||
                 (actual.reachable && std::abs(actual.cost - expected) > 1e-9)) {
                 std::cerr << "Randomized Dijkstra oracle mismatch\n";
                 return 1;
             }
         }
+    }
+    atlas::Graph geographic(4);
+    geographic.set_coordinate(0, {0.0, 0.0});
+    geographic.set_coordinate(1, {1.0, 0.0});
+    geographic.set_coordinate(2, {2.0, 0.0});
+    geographic.set_coordinate(3, {3.0, 0.0});
+    geographic.add_edge(0, 1, 1.0);
+    geographic.add_edge(1, 3, 2.0);
+    geographic.add_edge(0, 2, 2.0);
+    geographic.add_edge(2, 3, 1.0);
+    const auto dijkstra_route = atlas::dijkstra(geographic, 0, 3);
+    const auto a_star_route = atlas::a_star(geographic, 0, 3);
+    if (!a_star_route.reachable || a_star_route.cost != dijkstra_route.cost ||
+        a_star_route.nodes != dijkstra_route.nodes) {
+        std::cerr << "A* result does not match Dijkstra\n";
+        return 1;
+    }
+    try {
+        atlas::Graph missing_coordinates(2);
+        missing_coordinates.add_edge(0, 1, 1.0);
+        static_cast<void>(atlas::a_star(missing_coordinates, 0, 1));
+        return 1;
+    } catch (const atlas::GraphError&) {
     }
     return 0;
 }

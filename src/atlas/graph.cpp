@@ -4,13 +4,24 @@
 
 namespace atlas {
 
-Graph::Graph(std::size_t node_count) : adjacency_(node_count) {}
+Graph::Graph(std::size_t node_count) : adjacency_(node_count), coordinates_(node_count) {}
 
 void Graph::add_node(NodeId id) {
     if (static_cast<std::size_t>(id) < adjacency_.size()) {
         throw GraphError("node already exists");
     }
     adjacency_.resize(static_cast<std::size_t>(id) + 1);
+    coordinates_.resize(static_cast<std::size_t>(id) + 1);
+}
+
+void Graph::set_coordinate(NodeId id, Coordinate coordinate_value) {
+    if (!contains(id)) {
+        throw GraphError("node does not exist");
+    }
+    if (!std::isfinite(coordinate_value.x) || !std::isfinite(coordinate_value.y)) {
+        throw GraphError("coordinate values must be finite");
+    }
+    coordinates_[id] = coordinate_value;
 }
 
 void Graph::add_edge(NodeId from, NodeId to, double weight) {
@@ -48,6 +59,13 @@ const std::vector<Edge>& Graph::neighbors(NodeId from) const {
         throw GraphError("node does not exist");
     }
     return adjacency_[from];
+}
+
+std::optional<Coordinate> Graph::coordinate(NodeId id) const {
+    if (!contains(id)) {
+        throw GraphError("node does not exist");
+    }
+    return coordinates_[id];
 }
 
 }  // namespace atlas

@@ -6,7 +6,7 @@ weighted graph algorithms, dynamic routing, and vehicle-routing experiments.
 ## Current status
 
 Phase 0 foundation is in progress. The repository currently contains a CMake
-build, a versioned core library, a validated in-memory graph contract, a deterministic graph parser, deterministic BFS/DFS traversal, a Dijkstra shortest-path engine, an independent fixed-seed correctness oracle, a minimal CLI, and a baseline test. A*, benchmarks, dynamic updates, and VRP optimization are planned and are not yet implemented.
+build, a versioned core library, a validated in-memory graph contract, a deterministic graph parser, deterministic BFS/DFS traversal, Dijkstra and A* shortest-path engines, an independent fixed-seed correctness oracle, a minimal CLI, and a baseline test. Benchmarks, dynamic updates, and VRP optimization are planned and are not yet implemented.
 
 ## Build and test
 
