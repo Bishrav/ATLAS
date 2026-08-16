@@ -13,6 +13,7 @@ add_library(atlas_core
     src/atlas/graph.cpp
     src/atlas/graph_io.cpp
     src/atlas/traversal.cpp
+    src/atlas/shortest_path.cpp
 )
 target_include_directories(atlas_core PUBLIC include)
 target_compile_features(atlas_core PUBLIC cxx_std_20)
