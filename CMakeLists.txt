@@ -16,6 +16,7 @@ add_library(atlas_core
     src/atlas/shortest_path.cpp
     src/atlas/a_star.cpp
     src/atlas/bidirectional.cpp
+    src/atlas/benchmark.cpp
 )
 target_include_directories(atlas_core PUBLIC include)
 target_compile_features(atlas_core PUBLIC cxx_std_20)
@@ -28,6 +29,9 @@ endif()
 
 add_executable(atlas apps/atlas_main.cpp)
 target_link_libraries(atlas PRIVATE atlas_core)
+
+add_executable(atlas_benchmark apps/atlas_benchmark.cpp)
+target_link_libraries(atlas_benchmark PRIVATE atlas_core)
 
 if (BUILD_TESTING)
     add_executable(atlas_core_tests tests/core_tests.cpp)

@@ -12,6 +12,7 @@
 #include "atlas/shortest_path.hpp"
 #include "atlas/a_star.hpp"
 #include "atlas/bidirectional.hpp"
+#include "atlas/benchmark.hpp"
 
 namespace {
 
@@ -130,6 +131,20 @@ int main() {
                 std::cerr << "Randomized Dijkstra oracle mismatch\n";
                 return 1;
             }
+        }
+    }
+    const auto benchmark_graph = atlas::make_benchmark_graph();
+    const auto benchmark_queries = atlas::make_benchmark_queries();
+    const auto benchmark_rows = atlas::benchmark_algorithms(benchmark_graph, benchmark_queries);
+    if (benchmark_rows.size() != 3) {
+        std::cerr << "Benchmark algorithm count is incorrect\n";
+        return 1;
+    }
+    for (const auto& row : benchmark_rows) {
+        if (row.query_count != benchmark_queries.size() ||
+            row.successful_queries != benchmark_queries.size() || row.total_milliseconds < 0.0) {
+            std::cerr << "Benchmark result is incorrect\n";
+            return 1;
         }
     }
     atlas::Graph geographic(4);
