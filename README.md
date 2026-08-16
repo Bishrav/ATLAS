@@ -57,6 +57,10 @@ plus nodes expanded, queue pushes, and whether each algorithm matches
 Dijkstra’s baseline costs. These observations are not production performance
 claims.
 
+Graphs can be serialized as versioned `ATLAS_GRAPH_SNAPSHOT_V1` text snapshots
+for deterministic replay. Snapshot persistence is local and explicit; it is
+not a database.
+
 ## Repository structure
 
 ```text

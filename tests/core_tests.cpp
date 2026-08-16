@@ -13,6 +13,7 @@
 #include "atlas/a_star.hpp"
 #include "atlas/bidirectional.hpp"
 #include "atlas/benchmark.hpp"
+#include "atlas/snapshot.hpp"
 
 namespace {
 
@@ -147,6 +148,15 @@ int main() {
             std::cerr << "Benchmark result is incorrect\n";
             return 1;
         }
+    }
+    const std::string snapshot = atlas::serialize_graph(benchmark_graph);
+    std::istringstream snapshot_input(snapshot);
+    const atlas::Graph restored = atlas::deserialize_graph(snapshot_input);
+    if (atlas::serialize_graph(restored) != snapshot ||
+        restored.node_count() != benchmark_graph.node_count() ||
+        restored.edge_count() != benchmark_graph.edge_count()) {
+        std::cerr << "Graph snapshot round trip is incorrect\n";
+        return 1;
     }
     atlas::Graph geographic(4);
     geographic.set_coordinate(0, {0.0, 0.0});
