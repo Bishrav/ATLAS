@@ -1,6 +1,7 @@
 #include "atlas/benchmark.hpp"
 
 #include <chrono>
+#include <cmath>
 
 #include "atlas/a_star.hpp"
 #include "atlas/bidirectional.hpp"
@@ -11,27 +12,40 @@ namespace {
 
 template <typename Search>
 BenchmarkRow measure(const std::string& name, const Graph& graph,
-                     const std::vector<std::pair<NodeId, NodeId>>& queries, Search search) {
+                     const std::vector<std::pair<NodeId, NodeId>>& queries, Search search,
+                     const std::vector<PathResult>& expected) {
     const auto started = std::chrono::steady_clock::now();
     std::size_t successful = 0;
-    for (const auto [start, goal] : queries) {
-        if (search(graph, start, goal).reachable) {
+    bool correctness_passed = true;
+    for (std::size_t index = 0; index < queries.size(); ++index) {
+        const auto [start, goal] = queries[index];
+        const PathResult actual = search(graph, start, goal);
+        if (actual.reachable) {
             ++successful;
+        }
+        if (actual.reachable != expected[index].reachable ||
+            (actual.reachable && std::abs(actual.cost - expected[index].cost) > 1e-9)) {
+            correctness_passed = false;
         }
     }
     const auto finished = std::chrono::steady_clock::now();
     const double elapsed = std::chrono::duration<double, std::milli>(finished - started).count();
-    return {name, queries.size(), successful, elapsed};
+    return {name, queries.size(), successful, correctness_passed, elapsed};
 }
 
 }  // namespace
 
 std::vector<BenchmarkRow> benchmark_algorithms(
     const Graph& graph, const std::vector<std::pair<NodeId, NodeId>>& queries) {
+    std::vector<PathResult> expected;
+    expected.reserve(queries.size());
+    for (const auto [start, goal] : queries) {
+        expected.push_back(dijkstra(graph, start, goal));
+    }
     return {
-        measure("dijkstra", graph, queries, dijkstra),
-        measure("a_star", graph, queries, a_star),
-        measure("bidirectional_dijkstra", graph, queries, bidirectional_dijkstra),
+        measure("dijkstra", graph, queries, dijkstra, expected),
+        measure("a_star", graph, queries, a_star, expected),
+        measure("bidirectional_dijkstra", graph, queries, bidirectional_dijkstra, expected),
     };
 }
 

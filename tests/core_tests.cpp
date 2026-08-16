@@ -142,7 +142,8 @@ int main() {
     }
     for (const auto& row : benchmark_rows) {
         if (row.query_count != benchmark_queries.size() ||
-            row.successful_queries != benchmark_queries.size() || row.total_milliseconds < 0.0) {
+            row.successful_queries != benchmark_queries.size() || !row.correctness_passed ||
+            row.total_milliseconds < 0.0) {
             std::cerr << "Benchmark result is incorrect\n";
             return 1;
         }

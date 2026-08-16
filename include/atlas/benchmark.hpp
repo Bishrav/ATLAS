@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "atlas/graph.hpp"
+#include "atlas/shortest_path.hpp"
 
 namespace atlas {
 
@@ -13,6 +14,7 @@ struct BenchmarkRow {
     std::string algorithm;
     std::size_t query_count;
     std::size_t successful_queries;
+    bool correctness_passed;
     double total_milliseconds;
 };
 

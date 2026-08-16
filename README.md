@@ -52,8 +52,9 @@ Run the controlled algorithm benchmark after building:
 .\build\Release\atlas_benchmark.exe
 ```
 
-It reports measured local runtime for a fixed query set. These observations
-are not production performance claims.
+It reports measured local runtime for a fixed query set and marks whether each
+algorithm matches Dijkstra’s baseline costs. These observations are not
+production performance claims.
 
 ## Repository structure
 
