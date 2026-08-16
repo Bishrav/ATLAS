@@ -41,6 +41,9 @@ The full staged plan is in [docs/roadmap.md](docs/roadmap.md). The first
 implementation will prioritize deterministic graph facts and shortest-path
 correctness before adding external databases, caches, APIs, or UI.
 
+Benchmark details and regression policy are documented in
+[docs/benchmarking.md](docs/benchmarking.md).
+
 The initial graph format uses one record per line: `node <id>` or
 `edge <from> <to> <weight>`. Blank lines and `#` comments are accepted. Edge
 endpoints must be declared before use, and weights must be finite and
@@ -60,6 +63,11 @@ claims.
 Graphs can be serialized as versioned `ATLAS_GRAPH_SNAPSHOT_V1` text snapshots
 for deterministic replay. Snapshot persistence is local and explicit; it is
 not a database.
+
+Benchmark reports can be compared against a caller-supplied baseline by
+algorithm and query bucket. The comparator checks correctness, query-count
+compatibility, and an optional runtime slowdown threshold. No baseline runtime
+numbers are committed by this project yet.
 
 ## Repository structure
 

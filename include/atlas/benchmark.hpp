@@ -27,8 +27,19 @@ struct BenchmarkQuery {
     std::string bucket;
 };
 
+struct BenchmarkRegression {
+    std::string algorithm;
+    std::string bucket;
+    bool passed;
+    std::string reason;
+};
+
 [[nodiscard]] std::vector<BenchmarkRow> benchmark_algorithms(
     const Graph& graph, const std::vector<BenchmarkQuery>& queries);
+
+[[nodiscard]] std::vector<BenchmarkRegression> compare_benchmarks(
+    const std::vector<BenchmarkRow>& current, const std::vector<BenchmarkRow>& baseline,
+    double maximum_slowdown = 1.25);
 
 [[nodiscard]] Graph make_benchmark_graph();
 [[nodiscard]] std::vector<BenchmarkQuery> make_benchmark_queries();

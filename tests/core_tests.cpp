@@ -158,6 +158,17 @@ int main() {
         std::cerr << "Graph snapshot round trip is incorrect\n";
         return 1;
     }
+    const auto regression = atlas::compare_benchmarks(benchmark_rows, benchmark_rows);
+    if (regression.size() != benchmark_rows.size()) {
+        std::cerr << "Benchmark regression result count is incorrect\n";
+        return 1;
+    }
+    for (const auto& result : regression) {
+        if (!result.passed) {
+            std::cerr << "Identical benchmark reports should pass regression checks\n";
+            return 1;
+        }
+    }
     atlas::Graph geographic(4);
     geographic.set_coordinate(0, {0.0, 0.0});
     geographic.set_coordinate(1, {1.0, 0.0});

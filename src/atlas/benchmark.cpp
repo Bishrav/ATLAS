@@ -2,6 +2,8 @@
 
 #include <chrono>
 #include <cmath>
+#include <map>
+#include <stdexcept>
 
 #include "atlas/a_star.hpp"
 #include "atlas/bidirectional.hpp"
@@ -41,6 +43,40 @@ BenchmarkRow measure(const std::string& name, const Graph& graph,
 }
 
 }  // namespace
+
+std::vector<BenchmarkRegression> compare_benchmarks(
+    const std::vector<BenchmarkRow>& current, const std::vector<BenchmarkRow>& baseline,
+    double maximum_slowdown) {
+    if (!(maximum_slowdown >= 1.0) || !std::isfinite(maximum_slowdown)) {
+        throw std::invalid_argument("maximum slowdown must be finite and at least 1.0");
+    }
+    using Key = std::pair<std::string, std::string>;
+    std::map<Key, BenchmarkRow> baseline_by_key;
+    for (const BenchmarkRow& row : baseline) {
+        baseline_by_key[{row.algorithm, row.bucket}] = row;
+    }
+    std::vector<BenchmarkRegression> results;
+    for (const BenchmarkRow& row : current) {
+        const Key key{row.algorithm, row.bucket};
+        const auto baseline_row = baseline_by_key.find(key);
+        if (baseline_row == baseline_by_key.end()) {
+            results.push_back({row.algorithm, row.bucket, false, "missing baseline row"});
+            continue;
+        }
+        const BenchmarkRow& expected = baseline_row->second;
+        if (!row.correctness_passed) {
+            results.push_back({row.algorithm, row.bucket, false, "current correctness failed"});
+        } else if (row.query_count != expected.query_count) {
+            results.push_back({row.algorithm, row.bucket, false, "query count changed"});
+        } else if (expected.total_milliseconds > 0.0 &&
+                   row.total_milliseconds > expected.total_milliseconds * maximum_slowdown) {
+            results.push_back({row.algorithm, row.bucket, false, "runtime regression"});
+        } else {
+            results.push_back({row.algorithm, row.bucket, true, "within configured threshold"});
+        }
+    }
+    return results;
+}
 
 std::vector<BenchmarkRow> benchmark_algorithms(
     const Graph& graph, const std::vector<BenchmarkQuery>& queries) {
