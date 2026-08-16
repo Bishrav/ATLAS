@@ -5,6 +5,26 @@
 #include <map>
 #include <stdexcept>
 
+#if defined(_WIN32)
+#define ATLAS_PLATFORM "windows"
+#elif defined(__linux__)
+#define ATLAS_PLATFORM "linux"
+#elif defined(__APPLE__)
+#define ATLAS_PLATFORM "macos"
+#else
+#define ATLAS_PLATFORM "unknown"
+#endif
+
+#if defined(_MSC_VER)
+#define ATLAS_COMPILER "msvc"
+#elif defined(__clang__)
+#define ATLAS_COMPILER "clang"
+#elif defined(__GNUC__)
+#define ATLAS_COMPILER "gcc"
+#else
+#define ATLAS_COMPILER "unknown"
+#endif
+
 #include "atlas/a_star.hpp"
 #include "atlas/bidirectional.hpp"
 #include "atlas/shortest_path.hpp"
@@ -76,6 +96,10 @@ std::vector<BenchmarkRegression> compare_benchmarks(
         }
     }
     return results;
+}
+
+BenchmarkEnvironment benchmark_environment() {
+    return {ATLAS_COMPILER, std::to_string(__cplusplus), ATLAS_PLATFORM};
 }
 
 std::vector<BenchmarkRow> benchmark_algorithms(

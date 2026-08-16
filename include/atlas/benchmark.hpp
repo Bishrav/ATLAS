@@ -34,12 +34,20 @@ struct BenchmarkRegression {
     std::string reason;
 };
 
+struct BenchmarkEnvironment {
+    std::string compiler;
+    std::string language_standard;
+    std::string platform;
+};
+
 [[nodiscard]] std::vector<BenchmarkRow> benchmark_algorithms(
     const Graph& graph, const std::vector<BenchmarkQuery>& queries);
 
 [[nodiscard]] std::vector<BenchmarkRegression> compare_benchmarks(
     const std::vector<BenchmarkRow>& current, const std::vector<BenchmarkRow>& baseline,
     double maximum_slowdown = 1.25);
+
+[[nodiscard]] BenchmarkEnvironment benchmark_environment();
 
 [[nodiscard]] Graph make_benchmark_graph();
 [[nodiscard]] std::vector<BenchmarkQuery> make_benchmark_queries();

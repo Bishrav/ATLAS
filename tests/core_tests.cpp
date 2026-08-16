@@ -169,6 +169,12 @@ int main() {
             return 1;
         }
     }
+    const auto environment = atlas::benchmark_environment();
+    if (environment.compiler.empty() || environment.language_standard.empty() ||
+        environment.platform.empty()) {
+        std::cerr << "Benchmark environment metadata is incomplete\n";
+        return 1;
+    }
     atlas::Graph geographic(4);
     geographic.set_coordinate(0, {0.0, 0.0});
     geographic.set_coordinate(1, {1.0, 0.0});

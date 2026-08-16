@@ -18,3 +18,6 @@ machine- and workload-dependent.
 
 Future regression reports should record the graph snapshot, query set, compiler
 version, hardware, build flags, and raw output alongside the threshold used.
+ATLAS now emits compiler family, `__cplusplus` language-standard value, and
+platform metadata at benchmark startup; hardware and build flags still need to
+be recorded by the benchmark runner.

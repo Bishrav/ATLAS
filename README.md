@@ -184,6 +184,10 @@ Benchmark output includes:
 These are local observations, not production throughput, latency, or
 scalability claims. See [docs/benchmarking.md](docs/benchmarking.md).
 
+Each benchmark run also prints compiler family, C++ language-standard value,
+and platform metadata. Baseline comparisons should preserve this metadata with
+the graph snapshot, query set, build flags, and raw output.
+
 ## Build and run locally
 
 Requirements:

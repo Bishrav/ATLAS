@@ -3,6 +3,10 @@
 #include "atlas/benchmark.hpp"
 
 int main() {
+    const auto environment = atlas::benchmark_environment();
+    std::cout << "environment compiler=" << environment.compiler
+              << " standard=" << environment.language_standard
+              << " platform=" << environment.platform << '\n';
     const auto graph = atlas::make_benchmark_graph();
     const auto queries = atlas::make_benchmark_queries();
     for (const auto& row : atlas::benchmark_algorithms(graph, queries)) {
