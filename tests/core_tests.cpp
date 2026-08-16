@@ -15,6 +15,7 @@
 #include "atlas/benchmark.hpp"
 #include "atlas/snapshot.hpp"
 #include "atlas/route_cache.hpp"
+#include "atlas/dynamic_update.hpp"
 
 namespace {
 
@@ -244,6 +245,22 @@ int main() {
     const auto cache_stats = cache.stats();
     if (cache_stats.hits != 1 || cache_stats.misses != 1) {
         std::cerr << "Route cache statistics are incorrect\n";
+        return 1;
+    }
+    const auto revision_before_replay = dynamic_graph.revision();
+    atlas::replay_updates(dynamic_graph, {
+        {atlas::UpdateKind::OpenEdge, 1, 2, 2.0},
+        {atlas::UpdateKind::ChangeWeight, 0, 1, 3.0},
+        {atlas::UpdateKind::CloseEdge, 0, 1, 0.0},
+    });
+    if (dynamic_graph.revision() != revision_before_replay + 3 ||
+        dynamic_graph.edge_count() != 1 || dynamic_graph.neighbors(1)[0].to != 2) {
+        std::cerr << "Graph update replay is incorrect\n";
+        return 1;
+    }
+    const auto removed = cache.invalidate_older_than(routes.revision() + 1);
+    if (removed != 1 || cache.size() != 0) {
+        std::cerr << "Route cache invalidation is incorrect\n";
         return 1;
     }
     return 0;

@@ -50,6 +50,20 @@ void RouteCache::put(NodeId start, NodeId goal, std::uint64_t graph_revision, Pa
     }
 }
 
+std::size_t RouteCache::invalidate_older_than(std::uint64_t graph_revision) {
+    std::size_t removed = 0;
+    for (auto entry = entries_.begin(); entry != entries_.end();) {
+        if (entry->key.graph_revision < graph_revision) {
+            index_.erase(entry->key);
+            entry = entries_.erase(entry);
+            ++removed;
+        } else {
+            ++entry;
+        }
+    }
+    return removed;
+}
+
 void RouteCache::clear() {
     entries_.clear();
     index_.clear();

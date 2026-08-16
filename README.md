@@ -38,6 +38,7 @@ route caching, map data ingestion, VRP optimization, a network API, or a UI.
 - Benchmark comparison against Dijkstra baseline costs
 - Optional benchmark regression comparison against caller-supplied baselines
 - Versioned dynamic edge-weight updates and edge closures
+- Replayable graph update events and explicit cache invalidation
 - Revision-aware LRU route cache with hit, miss, and eviction statistics
 
 ## What is not implemented
@@ -45,8 +46,8 @@ route caching, map data ingestion, VRP optimization, a network API, or a UI.
 The following are planned, not current capabilities:
 
 - OpenStreetMap or other road-network ingestion
-- Traffic, closure, and dynamic edge-weight updates
-- Route caching and invalidation
+- Live traffic-provider integration and external update ingestion
+- Route-service integration beyond the current cache component
 - ALT landmarks or Contraction Hierarchies
 - TSP and VRP optimization
 - PostgreSQL/PostGIS, Redis, REST, or gRPC integration
@@ -85,7 +86,7 @@ flowchart LR
 | Traversal layer | BFS and DFS order from a start node | Implemented |
 | Path engine | Dijkstra, A*, bidirectional Dijkstra, route reconstruction | Implemented |
 | Benchmark layer | Fixed workload, buckets, correctness, local metrics | Implemented |
-| Dynamic routing | Edge updates, closures, graph revisions | Partially implemented |
+| Dynamic routing | Edge updates, closures, replay, graph revisions, cache invalidation | Partially implemented |
 | Optimization | TSP/VRP constraints and heuristics | Planned |
 | Delivery layer | REST/gRPC, storage, cache, UI | Planned |
 
@@ -266,9 +267,10 @@ environment metadata before using regression thresholds.
 ### Phase 5 — Dynamic routing and caching
 
 The first dynamic-routing slice supports validated edge-weight updates, edge
-closures, and a revision-aware route cache. Each successful graph mutation
-increments a monotonic in-memory revision, and cache keys include that revision
-so stale routes are not returned for a newer graph state.
+closures, replayable update events, and a revision-aware route cache. Each
+successful graph mutation increments a monotonic in-memory revision, and cache
+keys include that revision so stale routes are not returned for a newer graph
+state. Explicit invalidation can remove entries older than a selected revision.
 
 ### Phase 6 — Advanced preprocessing
 

@@ -23,6 +23,7 @@ public:
     [[nodiscard]] std::optional<PathResult> get(
         NodeId start, NodeId goal, std::uint64_t graph_revision);
     void put(NodeId start, NodeId goal, std::uint64_t graph_revision, PathResult result);
+    std::size_t invalidate_older_than(std::uint64_t graph_revision);
     void clear();
 
     [[nodiscard]] std::size_t size() const noexcept;
