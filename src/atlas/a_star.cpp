@@ -33,6 +33,8 @@ PathResult a_star(const Graph& graph, NodeId start, NodeId goal) {
     std::priority_queue<QueueEntry, std::vector<QueueEntry>, std::greater<>> frontier;
     cost[start] = 0.0;
     frontier.push({euclidean_distance(*start_coordinate, *goal_coordinate), start});
+    SearchMetrics metrics;
+    ++metrics.queue_pushes;
 
     while (!frontier.empty()) {
         const auto [priority, current] = frontier.top();
@@ -46,6 +48,7 @@ PathResult a_star(const Graph& graph, NodeId start, NodeId goal) {
         if (priority != expected_priority) {
             continue;
         }
+        ++metrics.nodes_expanded;
         if (current == goal) {
             break;
         }
@@ -62,12 +65,13 @@ PathResult a_star(const Graph& graph, NodeId start, NodeId goal) {
                     candidate + euclidean_distance(*next_coordinate, *goal_coordinate),
                     edge.to,
                 });
+                ++metrics.queue_pushes;
             }
         }
     }
 
     if (cost[goal] == infinity) {
-        return {false, infinity, {}};
+        return {false, infinity, {}, metrics};
     }
     std::vector<NodeId> path;
     for (NodeId current = goal; current != no_parent; current = parent[current]) {
@@ -77,7 +81,7 @@ PathResult a_star(const Graph& graph, NodeId start, NodeId goal) {
         }
     }
     std::reverse(path.begin(), path.end());
-    return {true, cost[goal], path};
+    return {true, cost[goal], path, metrics};
 }
 
 }  // namespace atlas

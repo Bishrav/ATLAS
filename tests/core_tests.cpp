@@ -136,13 +136,13 @@ int main() {
     const auto benchmark_graph = atlas::make_benchmark_graph();
     const auto benchmark_queries = atlas::make_benchmark_queries();
     const auto benchmark_rows = atlas::benchmark_algorithms(benchmark_graph, benchmark_queries);
-    if (benchmark_rows.size() != 3) {
-        std::cerr << "Benchmark algorithm count is incorrect\n";
+    if (benchmark_rows.size() != 9) {
+        std::cerr << "Benchmark bucket algorithm count is incorrect\n";
         return 1;
     }
     for (const auto& row : benchmark_rows) {
-        if (row.query_count != benchmark_queries.size() ||
-            row.successful_queries != benchmark_queries.size() || !row.correctness_passed ||
+        if (row.query_count == 0 || row.successful_queries != row.query_count ||
+            !row.correctness_passed || row.nodes_expanded == 0 || row.queue_pushes == 0 ||
             row.total_milliseconds < 0.0) {
             std::cerr << "Benchmark result is incorrect\n";
             return 1;

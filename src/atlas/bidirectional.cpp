@@ -37,6 +37,8 @@ PathResult bidirectional_dijkstra(const Graph& graph, NodeId start, NodeId goal)
     backward_distance[goal] = 0.0;
     forward_frontier.push({0.0, start});
     backward_frontier.push({0.0, goal});
+    SearchMetrics metrics;
+    metrics.queue_pushes = 2;
     double best_cost = infinity;
     NodeId meeting = no_parent;
 
@@ -56,6 +58,7 @@ PathResult bidirectional_dijkstra(const Graph& graph, NodeId start, NodeId goal)
             const auto [distance, current] = forward_frontier.top();
             forward_frontier.pop();
             if (distance == forward_distance[current]) {
+                ++metrics.nodes_expanded;
                 consider(current);
                 for (const Edge& edge : graph.neighbors(current)) {
                     const double candidate = distance + edge.weight;
@@ -63,6 +66,7 @@ PathResult bidirectional_dijkstra(const Graph& graph, NodeId start, NodeId goal)
                         forward_distance[edge.to] = candidate;
                         forward_parent[edge.to] = current;
                         forward_frontier.push({candidate, edge.to});
+                        ++metrics.queue_pushes;
                     }
                 }
             }
@@ -71,6 +75,7 @@ PathResult bidirectional_dijkstra(const Graph& graph, NodeId start, NodeId goal)
             const auto [distance, current] = backward_frontier.top();
             backward_frontier.pop();
             if (distance == backward_distance[current]) {
+                ++metrics.nodes_expanded;
                 consider(current);
                 for (const Edge& edge : reverse_edges[current]) {
                     const double candidate = distance + edge.weight;
@@ -78,6 +83,7 @@ PathResult bidirectional_dijkstra(const Graph& graph, NodeId start, NodeId goal)
                         backward_distance[edge.to] = candidate;
                         backward_next[edge.to] = current;
                         backward_frontier.push({candidate, edge.to});
+                        ++metrics.queue_pushes;
                     }
                 }
             }
@@ -85,7 +91,7 @@ PathResult bidirectional_dijkstra(const Graph& graph, NodeId start, NodeId goal)
     }
 
     if (meeting == no_parent) {
-        return {false, infinity, {}};
+        return {false, infinity, {}, metrics};
     }
 
     std::vector<NodeId> path;
@@ -98,11 +104,11 @@ PathResult bidirectional_dijkstra(const Graph& graph, NodeId start, NodeId goal)
     std::reverse(path.begin(), path.end());
     for (NodeId current = meeting; current != goal; current = backward_next[current]) {
         if (current == no_parent) {
-            return {false, infinity, {}};
+            return {false, infinity, {}, metrics};
         }
         path.push_back(backward_next[current]);
     }
-    return {true, best_cost, path};
+    return {true, best_cost, path, metrics};
 }
 
 }  // namespace atlas

@@ -22,12 +22,15 @@ PathResult dijkstra(const Graph& graph, NodeId start, NodeId goal) {
 
     distance[start] = 0.0;
     frontier.push({0.0, start});
+    SearchMetrics metrics;
+    ++metrics.queue_pushes;
     while (!frontier.empty()) {
         const auto [current_distance, current] = frontier.top();
         frontier.pop();
         if (current_distance != distance[current]) {
             continue;
         }
+        ++metrics.nodes_expanded;
         if (current == goal) {
             break;
         }
@@ -37,12 +40,13 @@ PathResult dijkstra(const Graph& graph, NodeId start, NodeId goal) {
                 distance[edge.to] = candidate;
                 parent[edge.to] = current;
                 frontier.push({candidate, edge.to});
+                ++metrics.queue_pushes;
             }
         }
     }
 
     if (distance[goal] == infinity) {
-        return {false, infinity, {}};
+        return {false, infinity, {}, metrics};
     }
 
     std::vector<NodeId> path;
@@ -53,7 +57,7 @@ PathResult dijkstra(const Graph& graph, NodeId start, NodeId goal) {
         }
     }
     std::reverse(path.begin(), path.end());
-    return {true, distance[goal], path};
+    return {true, distance[goal], path, metrics};
 }
 
 }  // namespace atlas
