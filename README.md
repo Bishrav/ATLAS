@@ -38,6 +38,7 @@ route caching, map data ingestion, VRP optimization, a network API, or a UI.
 - Benchmark comparison against Dijkstra baseline costs
 - Optional benchmark regression comparison against caller-supplied baselines
 - Versioned dynamic edge-weight updates and edge closures
+- Revision-aware LRU route cache with hit, miss, and eviction statistics
 
 ## What is not implemented
 
@@ -264,9 +265,10 @@ environment metadata before using regression thresholds.
 
 ### Phase 5 — Dynamic routing and caching
 
-The first dynamic-routing slice now supports validated edge-weight updates and
-edge closures. Each successful graph mutation increments a monotonic in-memory
-revision. Route-cache keys and invalidation remain planned.
+The first dynamic-routing slice supports validated edge-weight updates, edge
+closures, and a revision-aware route cache. Each successful graph mutation
+increments a monotonic in-memory revision, and cache keys include that revision
+so stale routes are not returned for a newer graph state.
 
 ### Phase 6 — Advanced preprocessing
 

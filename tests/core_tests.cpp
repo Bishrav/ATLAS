@@ -14,6 +14,7 @@
 #include "atlas/bidirectional.hpp"
 #include "atlas/benchmark.hpp"
 #include "atlas/snapshot.hpp"
+#include "atlas/route_cache.hpp"
 
 namespace {
 
@@ -228,6 +229,22 @@ int main() {
         dynamic_graph.update_edge_weight(1, 2, 2.0);
         return 1;
     } catch (const atlas::GraphError&) {
+    }
+    atlas::RouteCache cache(1);
+    const auto cached_route = atlas::dijkstra(routes, 0, 3);
+    cache.put(0, 3, routes.revision(), cached_route);
+    if (!cache.get(0, 3, routes.revision()).has_value()) {
+        std::cerr << "Route cache hit is missing\n";
+        return 1;
+    }
+    if (cache.get(0, 3, routes.revision() + 1).has_value()) {
+        std::cerr << "Route cache returned a stale revision\n";
+        return 1;
+    }
+    const auto cache_stats = cache.stats();
+    if (cache_stats.hits != 1 || cache_stats.misses != 1) {
+        std::cerr << "Route cache statistics are incorrect\n";
+        return 1;
     }
     return 0;
 }
