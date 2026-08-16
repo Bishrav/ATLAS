@@ -1,11 +1,44 @@
+#include <cmath>
 #include <iostream>
+#include <limits>
+#include <random>
 #include <sstream>
+#include <vector>
 
 #include "atlas/core.hpp"
 #include "atlas/graph.hpp"
 #include "atlas/graph_io.hpp"
 #include "atlas/traversal.hpp"
 #include "atlas/shortest_path.hpp"
+
+namespace {
+
+double oracle_distance(const atlas::Graph& graph, atlas::NodeId start, atlas::NodeId goal) {
+    const double infinity = std::numeric_limits<double>::infinity();
+    std::vector<double> distance(graph.node_count(), infinity);
+    distance[start] = 0.0;
+    for (std::size_t pass = 1; pass < graph.node_count(); ++pass) {
+        bool changed = false;
+        for (atlas::NodeId from = 0; from < graph.node_count(); ++from) {
+            if (distance[from] == infinity) {
+                continue;
+            }
+            for (const atlas::Edge& edge : graph.neighbors(from)) {
+                const double candidate = distance[from] + edge.weight;
+                if (candidate < distance[edge.to]) {
+                    distance[edge.to] = candidate;
+                    changed = true;
+                }
+            }
+        }
+        if (!changed) {
+            break;
+        }
+    }
+    return distance[goal];
+}
+
+}  // namespace
 
 int main() {
     if (atlas::version() != "0.1.0") {
@@ -67,6 +100,35 @@ int main() {
     if (unreachable.reachable || !unreachable.nodes.empty()) {
         std::cerr << "Unreachable Dijkstra result is incorrect\n";
         return 1;
+    }
+    constexpr atlas::NodeId random_node_count = 12;
+    atlas::Graph random_graph(random_node_count);
+    std::mt19937 generator(20260816);
+    std::uniform_int_distribution<int> include_edge(0, 3);
+    std::uniform_int_distribution<int> weight(1, 20);
+    for (atlas::NodeId from = 0; from < random_node_count; ++from) {
+        if (from + 1 < random_node_count) {
+            random_graph.add_edge(from, from + 1, static_cast<double>(weight(generator)));
+        }
+        for (atlas::NodeId to = 0; to < random_node_count; ++to) {
+            if (from != to && to != from + 1 && include_edge(generator) == 0) {
+                try {
+                    random_graph.add_edge(from, to, static_cast<double>(weight(generator)));
+                } catch (const atlas::GraphError&) {
+                }
+            }
+        }
+    }
+    for (atlas::NodeId start = 0; start < random_node_count; ++start) {
+        for (atlas::NodeId goal = 0; goal < random_node_count; ++goal) {
+            const auto actual = atlas::dijkstra(random_graph, start, goal);
+            const double expected = oracle_distance(random_graph, start, goal);
+            if (std::isinf(expected) != !actual.reachable ||
+                (actual.reachable && std::abs(actual.cost - expected) > 1e-9)) {
+                std::cerr << "Randomized Dijkstra oracle mismatch\n";
+                return 1;
+            }
+        }
     }
     return 0;
 }
