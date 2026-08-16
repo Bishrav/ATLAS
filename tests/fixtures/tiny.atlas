@@ -1,0 +1,7 @@
+# A deterministic three-node directed graph.
+node 0
+node 1
+node 2
+edge 0 1 12.5
+edge 0 2 25
+edge 1 2 8
