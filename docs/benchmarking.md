@@ -2,11 +2,15 @@
 
 ATLAS benchmarks Dijkstra, A*, and bidirectional Dijkstra on a fixed graph and
 short, medium, and long query buckets. Each row reports measured runtime,
-successful queries, correctness against Dijkstra, nodes expanded, and priority
-queue pushes.
+successful queries, correctness against Dijkstra, nodes expanded, priority
+queue pushes, and estimated graph-storage bytes.
 
 The benchmark output is a local observation. It is not a production capacity
 claim.
+
+The memory value is an estimate of graph adjacency and coordinate container
+storage. It is not process RSS, allocator overhead, executable memory, or total
+application memory.
 
 ## Regression comparison
 

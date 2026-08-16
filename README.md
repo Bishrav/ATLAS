@@ -179,6 +179,7 @@ Benchmark output includes:
 - Correctness status
 - Nodes expanded
 - Priority-queue pushes
+- Estimated graph-storage bytes
 - Measured total runtime
 
 These are local observations, not production throughput, latency, or
@@ -187,6 +188,10 @@ scalability claims. See [docs/benchmarking.md](docs/benchmarking.md).
 Each benchmark run also prints compiler family, C++ language-standard value,
 and platform metadata. Baseline comparisons should preserve this metadata with
 the graph snapshot, query set, build flags, and raw output.
+
+`graph_memory_bytes` is an estimated in-memory size for ATLAS graph adjacency
+and coordinate containers. It is not a process-RSS measurement and must not be
+read as total application memory usage.
 
 ## Build and run locally
 

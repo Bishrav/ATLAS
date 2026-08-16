@@ -15,6 +15,7 @@ int main() {
                   << " correctness=" << (row.correctness_passed ? "pass" : "fail")
                   << " nodes=" << row.nodes_expanded
                   << " queue_pushes=" << row.queue_pushes
+                  << " graph_memory_bytes=" << row.estimated_graph_memory_bytes
                   << " total_ms=" << row.total_milliseconds << '\n';
     }
     return 0;

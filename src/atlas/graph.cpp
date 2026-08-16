@@ -54,6 +54,16 @@ std::size_t Graph::edge_count() const noexcept {
     return edge_count_;
 }
 
+std::size_t Graph::estimated_memory_bytes() const noexcept {
+    std::size_t bytes = sizeof(Graph);
+    bytes += adjacency_.capacity() * sizeof(std::vector<Edge>);
+    bytes += coordinates_.capacity() * sizeof(std::optional<Coordinate>);
+    for (const auto& edges : adjacency_) {
+        bytes += edges.capacity() * sizeof(Edge);
+    }
+    return bytes;
+}
+
 const std::vector<Edge>& Graph::neighbors(NodeId from) const {
     if (!contains(from)) {
         throw GraphError("node does not exist");

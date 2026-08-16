@@ -36,6 +36,7 @@ public:
     [[nodiscard]] bool contains(NodeId id) const noexcept;
     [[nodiscard]] std::size_t node_count() const noexcept;
     [[nodiscard]] std::size_t edge_count() const noexcept;
+    [[nodiscard]] std::size_t estimated_memory_bytes() const noexcept;
     [[nodiscard]] const std::vector<Edge>& neighbors(NodeId from) const;
     [[nodiscard]] std::optional<Coordinate> coordinate(NodeId id) const;
 

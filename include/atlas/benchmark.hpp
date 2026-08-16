@@ -18,6 +18,7 @@ struct BenchmarkRow {
     bool correctness_passed;
     std::size_t nodes_expanded;
     std::size_t queue_pushes;
+    std::size_t estimated_graph_memory_bytes;
     double total_milliseconds;
 };
 

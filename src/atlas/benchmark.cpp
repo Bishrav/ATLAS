@@ -59,7 +59,7 @@ BenchmarkRow measure(const std::string& name, const Graph& graph,
     const auto finished = std::chrono::steady_clock::now();
     const double elapsed = std::chrono::duration<double, std::milli>(finished - started).count();
     return {name, bucket, queries.size(), successful, correctness_passed,
-            nodes_expanded, queue_pushes, elapsed};
+            nodes_expanded, queue_pushes, graph.estimated_memory_bytes(), elapsed};
 }
 
 }  // namespace

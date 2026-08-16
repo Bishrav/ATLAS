@@ -144,7 +144,7 @@ int main() {
     for (const auto& row : benchmark_rows) {
         if (row.query_count == 0 || row.successful_queries != row.query_count ||
             !row.correctness_passed || row.nodes_expanded == 0 || row.queue_pushes == 0 ||
-            row.total_milliseconds < 0.0) {
+            row.estimated_graph_memory_bytes == 0 || row.total_milliseconds < 0.0) {
             std::cerr << "Benchmark result is incorrect\n";
             return 1;
         }
