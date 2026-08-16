@@ -11,6 +11,7 @@
 #include "atlas/traversal.hpp"
 #include "atlas/shortest_path.hpp"
 #include "atlas/a_star.hpp"
+#include "atlas/bidirectional.hpp"
 
 namespace {
 
@@ -147,12 +148,23 @@ int main() {
         std::cerr << "A* result does not match Dijkstra\n";
         return 1;
     }
+    const auto bidirectional_route = atlas::bidirectional_dijkstra(geographic, 0, 3);
+    if (!bidirectional_route.reachable || bidirectional_route.cost != dijkstra_route.cost ||
+        bidirectional_route.nodes.front() != 0 || bidirectional_route.nodes.back() != 3) {
+        std::cerr << "Bidirectional Dijkstra result is incorrect\n";
+        return 1;
+    }
     try {
         atlas::Graph missing_coordinates(2);
         missing_coordinates.add_edge(0, 1, 1.0);
         static_cast<void>(atlas::a_star(missing_coordinates, 0, 1));
         return 1;
     } catch (const atlas::GraphError&) {
+    }
+    const auto no_route = atlas::bidirectional_dijkstra(geographic, 3, 0);
+    if (no_route.reachable || !no_route.nodes.empty()) {
+        std::cerr << "Bidirectional unreachable result is incorrect\n";
+        return 1;
     }
     return 0;
 }

@@ -15,6 +15,7 @@ add_library(atlas_core
     src/atlas/traversal.cpp
     src/atlas/shortest_path.cpp
     src/atlas/a_star.cpp
+    src/atlas/bidirectional.cpp
 )
 target_include_directories(atlas_core PUBLIC include)
 target_compile_features(atlas_core PUBLIC cxx_std_20)
