@@ -52,6 +52,7 @@ network API, or a UI.
 - Deterministic nearest-neighbor versus 2-opt cost comparison
 - Deterministic CLI route demonstration with algorithm selection
 - Transport-independent versioned routing service boundary
+- Routing service request, success, and failure metrics
 
 ## What is not implemented
 
@@ -251,7 +252,8 @@ status. `atlas --help` prints the available commands.
 
 The core also exposes an in-process `ATLAS_ROUTE_API_V1` service boundary with
 typed route requests, algorithm selection, graph-revision responses, and ALT
-index validation. HTTP/gRPC transport is not implemented yet.
+index validation. The boundary also exposes request/success/failure counters for
+transport adapters. HTTP/gRPC transport is not implemented yet.
 
 Run the controlled benchmark:
 

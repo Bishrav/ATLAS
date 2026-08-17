@@ -386,11 +386,29 @@ int main() {
         std::cerr << "Routing service response is incorrect\n";
         return 1;
     }
+    const auto service_metrics = service.metrics();
+    if (service_metrics.requests != 1 || service_metrics.successful_requests != 1 ||
+        service_metrics.failed_requests != 0) {
+        std::cerr << "Routing service metrics are incorrect\n";
+        return 1;
+    }
+    const atlas::RoutingService without_landmarks(routes);
     try {
-        const atlas::RoutingService without_landmarks(routes);
         static_cast<void>(without_landmarks.route({0, 3, atlas::RouteAlgorithm::AltAStar}));
         return 1;
     } catch (const atlas::RoutingServiceError&) {
+    }
+    const auto failed_service_metrics = service.metrics();
+    if (failed_service_metrics.requests != 1 || failed_service_metrics.successful_requests != 1 ||
+        failed_service_metrics.failed_requests != 0) {
+        std::cerr << "Independent service metrics changed unexpectedly\n";
+        return 1;
+    }
+    const auto without_landmark_metrics = without_landmarks.metrics();
+    if (without_landmark_metrics.requests != 1 || without_landmark_metrics.successful_requests != 0 ||
+        without_landmark_metrics.failed_requests != 1) {
+        std::cerr << "Failed routing service metrics are incorrect\n";
+        return 1;
     }
     return 0;
 }

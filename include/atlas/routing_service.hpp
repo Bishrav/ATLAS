@@ -28,6 +28,12 @@ struct RouteResponse {
     std::uint64_t graph_revision;
 };
 
+struct RoutingServiceMetrics {
+    std::uint64_t requests = 0;
+    std::uint64_t successful_requests = 0;
+    std::uint64_t failed_requests = 0;
+};
+
 class RoutingServiceError : public std::invalid_argument {
 public:
     using std::invalid_argument::invalid_argument;
@@ -38,10 +44,12 @@ public:
     RoutingService(const Graph& graph, const LandmarkIndex* landmarks = nullptr) noexcept;
 
     [[nodiscard]] RouteResponse route(const RouteRequest& request) const;
+    [[nodiscard]] RoutingServiceMetrics metrics() const noexcept;
 
 private:
     const Graph& graph_;
     const LandmarkIndex* landmarks_;
+    mutable RoutingServiceMetrics metrics_;
 };
 
 }  // namespace atlas
