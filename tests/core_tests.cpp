@@ -22,6 +22,7 @@
 #include "atlas/vrp_evaluation.hpp"
 #include "atlas/vrp_optimization.hpp"
 #include "atlas/vrp_multi_vehicle.hpp"
+#include "atlas/vrp_comparison.hpp"
 
 namespace {
 
@@ -366,6 +367,14 @@ int main() {
         fleet_solution.routes[0].delivery_ids != std::vector<std::uint32_t>{1} ||
         fleet_solution.routes[1].delivery_ids != std::vector<std::uint32_t>{2}) {
         std::cerr << "Multi-vehicle VRP assignment is incorrect\n";
+        return 1;
+    }
+    const auto comparison =
+        atlas::compare_nearest_neighbor_and_two_opt(optimization_graph, optimization_problem);
+    if (comparison.baseline_cost != 21.0 || comparison.optimized_cost != 4.0 ||
+        comparison.absolute_improvement != 17.0 ||
+        comparison.relative_improvement != 17.0 / 21.0) {
+        std::cerr << "VRP quality comparison is incorrect\n";
         return 1;
     }
     return 0;

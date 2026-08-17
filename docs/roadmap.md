@@ -58,7 +58,8 @@ specification and keeps algorithm correctness ahead of infrastructure breadth.
 - Depot, delivery, capacity, and time-window contracts
 - Greedy and nearest-neighbor baselines
 - 2-opt local search
-- Multi-vehicle objectives and quality/runtime comparison
+- Multi-vehicle objectives and quality comparison (implemented); runtime
+  benchmarking remains planned
 
 ## Phase 8 — Backend and demonstration quality
 
