@@ -66,7 +66,7 @@ The following are planned, not current capabilities:
 - External route-service integration beyond the current in-process boundary
 - Contraction Hierarchies pending representative benchmark evidence
 - Full TSP/VRP optimization and optimality guarantees
-- PostgreSQL/PostGIS, Redis, REST, or gRPC integration
+- PostgreSQL/PostGIS, Redis, or a listening REST/gRPC server
 - Prometheus/Grafana observability
 - Web or map-based user interface
 - Production deployment or market validation
@@ -339,12 +339,6 @@ HTTP/gRPC server, external integrations, and a UI remain explicitly planned.
 
 See [docs/operations.md](docs/operations.md) for supported verification and
 operating commands.
-
-### Phase 8 — Backend and demonstration quality
-
-Planned work includes a thin API, operational safeguards, optional storage and
-cache integrations, and a UI that exposes algorithm results without owning
-algorithm logic.
 
 ## Engineering status
 

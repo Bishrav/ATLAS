@@ -51,3 +51,9 @@ performance number is committed as a product guarantee.
 
 Only claims backed by repository code, tests, CI output, or recorded benchmark
 artifacts should be presented as completed evidence.
+
+## Final scope decision
+
+The current portfolio milestone is complete at the in-process delivery
+boundary. A listening server, external storage/integrations, and a UI are
+intentionally deferred follow-on products rather than hidden incomplete work.
