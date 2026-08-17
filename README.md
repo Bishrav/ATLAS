@@ -48,6 +48,7 @@ network API, or a UI.
 - Deterministic single-vehicle nearest-neighbor VRP baseline
 - Deterministic VRP baseline evaluation metrics
 - Directed-graph-safe 2-opt local search for single-vehicle routes
+- Deterministic multi-vehicle first-fit capacity assignment baseline
 
 ## What is not implemented
 
@@ -295,9 +296,10 @@ and optional time-window contracts with graph-aware validation. A deterministic
 single-vehicle nearest-neighbor baseline now computes graph route costs. Its
 evaluation reports delivery coverage, route cost, route size, and capacity
 utilization without claiming optimality. Directed 2-opt recomputes graph legs
-after delivery-order swaps and compares its result with the greedy baseline.
-Multi-vehicle assignment, time-window scheduling, and broader optimization
-comparisons remain planned.
+after delivery-order swaps and compares its result with the greedy baseline. A
+multi-vehicle first-fit capacity assignment baseline now builds one route per
+vehicle. Time-window scheduling and broader optimization comparisons remain
+planned.
 
 ### Phase 8 — Backend and demonstration quality
 

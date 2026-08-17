@@ -21,6 +21,7 @@
 #include "atlas/vrp_baseline.hpp"
 #include "atlas/vrp_evaluation.hpp"
 #include "atlas/vrp_optimization.hpp"
+#include "atlas/vrp_multi_vehicle.hpp"
 
 namespace {
 
@@ -352,6 +353,19 @@ int main() {
     if (greedy_route.total_cost != 21.0 || optimized_route.total_cost != 4.0 ||
         optimized_route.delivery_ids != std::vector<std::uint32_t>{2, 1}) {
         std::cerr << "2-opt VRP route is incorrect\n";
+        return 1;
+    }
+    const atlas::VrpProblem fleet_problem{
+        0,
+        {{1, 1, 1.0, std::nullopt}, {2, 2, 1.0, std::nullopt}},
+        {{10, 0, 3, 1.0}, {11, 0, 3, 1.0}},
+    };
+    const auto fleet_solution =
+        atlas::multi_vehicle_nearest_neighbor(optimization_graph, fleet_problem);
+    if (fleet_solution.routes.size() != 2 || fleet_solution.total_cost != 14.0 ||
+        fleet_solution.routes[0].delivery_ids != std::vector<std::uint32_t>{1} ||
+        fleet_solution.routes[1].delivery_ids != std::vector<std::uint32_t>{2}) {
+        std::cerr << "Multi-vehicle VRP assignment is incorrect\n";
         return 1;
     }
     return 0;
