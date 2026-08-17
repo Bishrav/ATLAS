@@ -45,6 +45,7 @@ network API, or a UI.
 - Deterministic ALT landmark preprocessing with directed lower-bound heuristics
 - A* routing overload using a revision-matched ALT heuristic
 - Logical ALT index-memory estimation for preprocessing comparisons
+- Deterministic single-vehicle nearest-neighbor VRP baseline
 
 ## What is not implemented
 
@@ -93,7 +94,7 @@ flowchart LR
 | Benchmark layer | Fixed workload, buckets, correctness, local metrics | Implemented |
 | Dynamic routing | Edge updates, closures, replay, graph revisions, cache invalidation | Partially implemented |
 | Preprocessing | ALT landmark distance index and admissible heuristic contract | Partially implemented |
-| Optimization | Versioned VRP contracts and validation | Partially implemented |
+| Optimization | Versioned VRP contracts, validation, and nearest-neighbor baseline | Partially implemented |
 | Delivery layer | REST/gRPC, storage, cache, UI | Planned |
 
 The core algorithms do not depend on a database, network server, or UI. This
@@ -288,8 +289,10 @@ evidence justifies its preprocessing and update complexity. See [ADR 0001](docs/
 ### Phase 7 — Vehicle-routing optimization
 
 The first Phase 7 milestone adds versioned depot, delivery, vehicle-capacity,
-and optional time-window contracts with graph-aware validation. Routing
-heuristics and quality-versus-runtime evaluation remain planned.
+and optional time-window contracts with graph-aware validation. A deterministic
+single-vehicle nearest-neighbor baseline now computes graph route costs; multi-
+vehicle assignment, time-window scheduling, and quality evaluation remain
+planned.
 
 ### Phase 8 — Backend and demonstration quality
 

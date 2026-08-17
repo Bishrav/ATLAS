@@ -18,6 +18,7 @@
 #include "atlas/dynamic_update.hpp"
 #include "atlas/landmark.hpp"
 #include "atlas/vrp.hpp"
+#include "atlas/vrp_baseline.hpp"
 
 namespace {
 
@@ -301,7 +302,7 @@ int main() {
     const atlas::VrpProblem vrp_problem{
         0,
         {{1, 2, 2.0, atlas::TimeWindow{0.0, 10.0}}},
-        {{1, 0, 0, 4.0}},
+        {{1, 0, 3, 4.0}},
     };
     try {
         atlas::validate_vrp_problem(routes, vrp_problem);
@@ -315,6 +316,15 @@ int main() {
         atlas::validate_vrp_problem(routes, invalid_vrp);
         return 1;
     } catch (const atlas::VrpError&) {
+    }
+    auto baseline_problem = vrp_problem;
+    baseline_problem.deliveries[0].time_window.reset();
+    const auto vrp_route = atlas::nearest_neighbor_route(routes, baseline_problem);
+    if (vrp_route.vehicle_id != 1 || vrp_route.delivery_ids != std::vector<std::uint32_t>{1} ||
+        vrp_route.nodes != std::vector<atlas::NodeId>{0, 2, 1, 3} ||
+        vrp_route.total_cost != 5.0) {
+        std::cerr << "Nearest-neighbor VRP route is incorrect\n";
+        return 1;
     }
     return 0;
 }
