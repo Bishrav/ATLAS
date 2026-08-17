@@ -17,6 +17,7 @@
 #include "atlas/route_cache.hpp"
 #include "atlas/dynamic_update.hpp"
 #include "atlas/landmark.hpp"
+#include "atlas/vrp.hpp"
 
 namespace {
 
@@ -296,6 +297,24 @@ int main() {
         static_cast<void>(atlas::LandmarkIndex::build(routes, {0, 0}));
         return 1;
     } catch (const atlas::GraphError&) {
+    }
+    const atlas::VrpProblem vrp_problem{
+        0,
+        {{1, 2, 2.0, atlas::TimeWindow{0.0, 10.0}}},
+        {{1, 0, 0, 4.0}},
+    };
+    try {
+        atlas::validate_vrp_problem(routes, vrp_problem);
+    } catch (const atlas::VrpError&) {
+        std::cerr << "Valid VRP problem was rejected\n";
+        return 1;
+    }
+    try {
+        auto invalid_vrp = vrp_problem;
+        invalid_vrp.deliveries[0].demand = -1.0;
+        atlas::validate_vrp_problem(routes, invalid_vrp);
+        return 1;
+    } catch (const atlas::VrpError&) {
     }
     return 0;
 }

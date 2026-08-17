@@ -5,7 +5,7 @@ weighted graph algorithms. It is being built as an algorithm-first portfolio
 project: graph correctness, route reconstruction, reproducible evaluation, and
 measured tradeoffs come before databases, hosted APIs, or a map UI.
 
-> Current status: **Research Prototype — Phase 6 advanced preprocessing
+> Current status: **Research Prototype — Phase 7 vehicle-routing contracts
 > in progress.**
 
 ## Project identity
@@ -93,7 +93,7 @@ flowchart LR
 | Benchmark layer | Fixed workload, buckets, correctness, local metrics | Implemented |
 | Dynamic routing | Edge updates, closures, replay, graph revisions, cache invalidation | Partially implemented |
 | Preprocessing | ALT landmark distance index and admissible heuristic contract | Partially implemented |
-| Optimization | TSP/VRP constraints and heuristics | Planned |
+| Optimization | Versioned VRP contracts and validation | Partially implemented |
 | Delivery layer | REST/gRPC, storage, cache, UI | Planned |
 
 The core algorithms do not depend on a database, network server, or UI. This
@@ -287,8 +287,9 @@ evidence justifies its preprocessing and update complexity. See [ADR 0001](docs/
 
 ### Phase 7 — Vehicle-routing optimization
 
-Planned work includes depot and delivery contracts, capacities, time windows,
-greedy baselines, local search, and quality-versus-runtime evaluation.
+The first Phase 7 milestone adds versioned depot, delivery, vehicle-capacity,
+and optional time-window contracts with graph-aware validation. Routing
+heuristics and quality-versus-runtime evaluation remain planned.
 
 ### Phase 8 — Backend and demonstration quality
 

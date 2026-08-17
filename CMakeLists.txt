@@ -21,6 +21,7 @@ add_library(atlas_core
     src/atlas/route_cache.cpp
     src/atlas/dynamic_update.cpp
     src/atlas/landmark.cpp
+    src/atlas/vrp.cpp
 )
 target_include_directories(atlas_core PUBLIC include)
 target_compile_features(atlas_core PUBLIC cxx_std_20)
