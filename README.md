@@ -47,6 +47,7 @@ network API, or a UI.
 - Logical ALT index-memory estimation for preprocessing comparisons
 - Deterministic single-vehicle nearest-neighbor VRP baseline
 - Deterministic VRP baseline evaluation metrics
+- Directed-graph-safe 2-opt local search for single-vehicle routes
 
 ## What is not implemented
 
@@ -293,8 +294,10 @@ The first Phase 7 milestone adds versioned depot, delivery, vehicle-capacity,
 and optional time-window contracts with graph-aware validation. A deterministic
 single-vehicle nearest-neighbor baseline now computes graph route costs. Its
 evaluation reports delivery coverage, route cost, route size, and capacity
-utilization without claiming optimality. Multi-vehicle assignment, time-window
-scheduling, and optimization comparisons remain planned.
+utilization without claiming optimality. Directed 2-opt recomputes graph legs
+after delivery-order swaps and compares its result with the greedy baseline.
+Multi-vehicle assignment, time-window scheduling, and broader optimization
+comparisons remain planned.
 
 ### Phase 8 — Backend and demonstration quality
 

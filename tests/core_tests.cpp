@@ -20,6 +20,7 @@
 #include "atlas/vrp.hpp"
 #include "atlas/vrp_baseline.hpp"
 #include "atlas/vrp_evaluation.hpp"
+#include "atlas/vrp_optimization.hpp"
 
 namespace {
 
@@ -332,6 +333,25 @@ int main() {
         evaluation.delivered_deliveries != 1 || evaluation.route_node_count != 4 ||
         evaluation.total_cost != 5.0 || evaluation.capacity_utilization != 0.5) {
         std::cerr << "VRP baseline evaluation is incorrect\n";
+        return 1;
+    }
+    atlas::Graph optimization_graph(4);
+    optimization_graph.add_edge(0, 1, 1.0);
+    optimization_graph.add_edge(0, 2, 2.0);
+    optimization_graph.add_edge(1, 2, 10.0);
+    optimization_graph.add_edge(1, 3, 1.0);
+    optimization_graph.add_edge(2, 1, 1.0);
+    optimization_graph.add_edge(2, 3, 10.0);
+    const atlas::VrpProblem optimization_problem{
+        0,
+        {{1, 1, 1.0, std::nullopt}, {2, 2, 1.0, std::nullopt}},
+        {{1, 0, 3, 3.0}},
+    };
+    const auto greedy_route = atlas::nearest_neighbor_route(optimization_graph, optimization_problem);
+    const auto optimized_route = atlas::two_opt_route(optimization_graph, optimization_problem);
+    if (greedy_route.total_cost != 21.0 || optimized_route.total_cost != 4.0 ||
+        optimized_route.delivery_ids != std::vector<std::uint32_t>{2, 1}) {
+        std::cerr << "2-opt VRP route is incorrect\n";
         return 1;
     }
     return 0;

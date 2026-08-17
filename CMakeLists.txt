@@ -24,6 +24,7 @@ add_library(atlas_core
     src/atlas/vrp.cpp
     src/atlas/vrp_baseline.cpp
     src/atlas/vrp_evaluation.cpp
+    src/atlas/vrp_optimization.cpp
 )
 target_include_directories(atlas_core PUBLIC include)
 target_compile_features(atlas_core PUBLIC cxx_std_20)
