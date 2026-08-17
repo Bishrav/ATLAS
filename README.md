@@ -245,6 +245,9 @@ Supported demonstration algorithms are `dijkstra`, `a-star`, and
 reachability, cost, search metrics, and node sequence. It is a local
 demonstration, not a hosted API or UI.
 
+CLI failures use stable `error_code=... message=...` output and a non-zero exit
+status. `atlas --help` prints the available commands.
+
 Run the controlled benchmark:
 
 ```powershell

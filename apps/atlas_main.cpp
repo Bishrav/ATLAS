@@ -1,3 +1,4 @@
+#include <exception>
 #include <iostream>
 #include <string>
 #include <string_view>
@@ -9,6 +10,18 @@
 #include "atlas/shortest_path.hpp"
 
 namespace {
+
+int print_error(std::string_view code, const std::exception& error) {
+    std::cerr << "error_code=" << code << " message=" << error.what() << '\n';
+    return 2;
+}
+
+void print_usage() {
+    std::cout << "ATLAS routing and optimization engine\n"
+              << "Usage: atlas --version\n"
+              << "       atlas --help\n"
+              << "       atlas demo-route [--algorithm dijkstra|a-star|bidirectional]\n";
+}
 
 void print_route(const atlas::PathResult& result) {
     std::cout << "reachable=" << (result.reachable ? "true" : "false")
@@ -30,28 +43,39 @@ int main(int argc, char* argv[]) {
         std::cout << atlas::version() << '\n';
         return 0;
     }
-    if (argc == 2 || (argc == 4 && std::string_view(argv[1]) == "demo-route" &&
-                      std::string_view(argv[2]) == "--algorithm")) {
-        if (std::string_view(argv[1]) != "demo-route") {
+    if (argc == 2 && std::string_view(argv[1]) == "--help") {
+        print_usage();
+        return 0;
+    }
+    if (argc >= 2 && std::string_view(argv[1]) == "demo-route") {
+        if (argc != 2 && (argc != 4 || std::string_view(argv[2]) != "--algorithm")) {
+            std::cerr << "error_code=invalid_arguments message=invalid demo-route arguments\n";
             return 2;
         }
         const std::string_view algorithm = argc == 2 ? "dijkstra" : argv[3];
-        const auto graph = atlas::make_benchmark_graph();
-        if (algorithm == "dijkstra") {
-            print_route(atlas::dijkstra(graph, 0, 31));
-        } else if (algorithm == "a-star") {
-            print_route(atlas::a_star(graph, 0, 31));
-        } else if (algorithm == "bidirectional") {
-            print_route(atlas::bidirectional_dijkstra(graph, 0, 31));
-        } else {
-            std::cerr << "Unknown algorithm: " << algorithm << '\n';
-            return 2;
+        try {
+            const auto graph = atlas::make_benchmark_graph();
+            if (algorithm == "dijkstra") {
+                print_route(atlas::dijkstra(graph, 0, 31));
+            } else if (algorithm == "a-star") {
+                print_route(atlas::a_star(graph, 0, 31));
+            } else if (algorithm == "bidirectional") {
+                print_route(atlas::bidirectional_dijkstra(graph, 0, 31));
+            } else {
+                std::cerr << "error_code=unsupported_algorithm message=unknown algorithm: "
+                          << algorithm << '\n';
+                return 2;
+            }
+        } catch (const std::exception& error) {
+            return print_error("route_execution_failed", error);
         }
         return 0;
     }
 
-    std::cout << "ATLAS routing and optimization engine\n"
-              << "Usage: atlas --version\n"
-              << "       atlas demo-route [--algorithm dijkstra|a-star|bidirectional]\n";
-    return argc == 1 ? 0 : 2;
+    if (argc == 1) {
+        print_usage();
+        return 0;
+    }
+    std::cerr << "error_code=invalid_arguments message=unknown command\n";
+    return 2;
 }
