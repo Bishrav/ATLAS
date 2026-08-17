@@ -1,9 +1,9 @@
 # Benchmarking
 
-ATLAS benchmarks Dijkstra, A*, and bidirectional Dijkstra on a fixed graph and
-short, medium, and long query buckets. Each row reports measured runtime,
-successful queries, correctness against Dijkstra, nodes expanded, priority
-queue pushes, and estimated graph-storage bytes.
+ATLAS benchmarks Dijkstra, coordinate-aware A*, ALT A*, and bidirectional
+Dijkstra on a fixed graph and short, medium, and long query buckets. Each row
+reports measured runtime, successful queries, correctness against Dijkstra,
+nodes expanded, priority queue pushes, and estimated graph-storage bytes.
 
 The benchmark output is a local observation. It is not a production capacity
 claim.

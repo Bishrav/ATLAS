@@ -34,6 +34,7 @@ route caching, map data ingestion, VRP optimization, a network API, or a UI.
 - Path reconstruction and explicit unreachable results
 - Fixed-seed randomized Dijkstra correctness oracle
 - Controlled benchmark workload with short, medium, and long query buckets
+- ALT A* benchmark rows validated against Dijkstra costs
 - Nodes-expanded and priority-queue-push metrics
 - Benchmark comparison against Dijkstra baseline costs
 - Optional benchmark regression comparison against caller-supplied baselines
@@ -279,8 +280,9 @@ state. Explicit invalidation can remove entries older than a selected revision.
 
 Phase 6 now includes deterministic ALT landmark preprocessing and an A* overload
 that uses its directed lower bound when the index matches the graph revision.
-Contraction Hierarchies and preprocessing/query tradeoff evaluation remain
-planned.
+The controlled benchmark now measures ALT A* alongside the existing algorithms
+and checks its route costs against Dijkstra. Broader preprocessing/query tradeoff
+evaluation and Contraction Hierarchies remain planned.
 
 ### Phase 7 — Vehicle-routing optimization
 

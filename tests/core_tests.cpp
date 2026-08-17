@@ -140,7 +140,7 @@ int main() {
     const auto benchmark_graph = atlas::make_benchmark_graph();
     const auto benchmark_queries = atlas::make_benchmark_queries();
     const auto benchmark_rows = atlas::benchmark_algorithms(benchmark_graph, benchmark_queries);
-    if (benchmark_rows.size() != 9) {
+    if (benchmark_rows.size() != 12) {
         std::cerr << "Benchmark bucket algorithm count is incorrect\n";
         return 1;
     }

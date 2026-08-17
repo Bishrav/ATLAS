@@ -27,6 +27,7 @@
 
 #include "atlas/a_star.hpp"
 #include "atlas/bidirectional.hpp"
+#include "atlas/landmark.hpp"
 #include "atlas/shortest_path.hpp"
 
 namespace atlas {
@@ -105,6 +106,8 @@ BenchmarkEnvironment benchmark_environment() {
 std::vector<BenchmarkRow> benchmark_algorithms(
     const Graph& graph, const std::vector<BenchmarkQuery>& queries) {
     std::vector<BenchmarkRow> rows;
+    const LandmarkIndex landmarks = LandmarkIndex::build(
+        graph, {0, static_cast<NodeId>(graph.node_count() - 1)});
     for (const std::string& bucket : {std::string("short"), std::string("medium"), std::string("long")}) {
         std::vector<BenchmarkQuery> bucket_queries;
         for (const BenchmarkQuery& query : queries) {
@@ -122,6 +125,12 @@ std::vector<BenchmarkRow> benchmark_algorithms(
         }
         rows.push_back(measure("dijkstra", graph, bucket, bucket_queries, dijkstra, expected));
         rows.push_back(measure("a_star", graph, bucket, bucket_queries, a_star, expected));
+        rows.push_back(measure(
+            "alt_a_star", graph, bucket, bucket_queries,
+            [&landmarks](const Graph& current, NodeId start, NodeId goal) {
+                return a_star(current, start, goal, landmarks);
+            },
+            expected));
         rows.push_back(measure("bidirectional_dijkstra", graph, bucket, bucket_queries,
                                bidirectional_dijkstra, expected));
     }
