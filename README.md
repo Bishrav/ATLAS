@@ -40,6 +40,7 @@ route caching, map data ingestion, VRP optimization, a network API, or a UI.
 - Versioned dynamic edge-weight updates and edge closures
 - Replayable graph update events and explicit cache invalidation
 - Revision-aware LRU route cache with hit, miss, and eviction statistics
+- Deterministic ALT landmark preprocessing with directed lower-bound heuristics
 
 ## What is not implemented
 
@@ -48,7 +49,7 @@ The following are planned, not current capabilities:
 - OpenStreetMap or other road-network ingestion
 - Live traffic-provider integration and external update ingestion
 - Route-service integration beyond the current cache component
-- ALT landmarks or Contraction Hierarchies
+- A* integration with ALT heuristics and Contraction Hierarchies
 - TSP and VRP optimization
 - PostgreSQL/PostGIS, Redis, REST, or gRPC integration
 - Prometheus/Grafana observability
@@ -87,6 +88,7 @@ flowchart LR
 | Path engine | Dijkstra, A*, bidirectional Dijkstra, route reconstruction | Implemented |
 | Benchmark layer | Fixed workload, buckets, correctness, local metrics | Implemented |
 | Dynamic routing | Edge updates, closures, replay, graph revisions, cache invalidation | Partially implemented |
+| Preprocessing | ALT landmark distance index and admissible heuristic contract | Partially implemented |
 | Optimization | TSP/VRP constraints and heuristics | Planned |
 | Delivery layer | REST/gRPC, storage, cache, UI | Planned |
 
@@ -274,8 +276,10 @@ state. Explicit invalidation can remove entries older than a selected revision.
 
 ### Phase 6 — Advanced preprocessing
 
-Planned work includes ALT landmarks and, only if measured preprocessing tradeoffs
-justify it, Contraction Hierarchies.
+The first Phase 6 milestone adds deterministic ALT landmark preprocessing. The
+index stores landmark-to-node and node-to-landmark distances, captures the graph
+revision used to build it, and exposes the directed ALT lower bound. Integrating
+that bound into A* and evaluating preprocessing/query tradeoffs remain planned.
 
 ### Phase 7 — Vehicle-routing optimization
 

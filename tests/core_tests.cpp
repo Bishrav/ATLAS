@@ -16,6 +16,7 @@
 #include "atlas/snapshot.hpp"
 #include "atlas/route_cache.hpp"
 #include "atlas/dynamic_update.hpp"
+#include "atlas/landmark.hpp"
 
 namespace {
 
@@ -262,6 +263,25 @@ int main() {
     if (removed != 1 || cache.size() != 0) {
         std::cerr << "Route cache invalidation is incorrect\n";
         return 1;
+    }
+    const auto landmarks = atlas::LandmarkIndex::build(routes, {0, 3});
+    if (landmarks.landmark_count() != 2 || !landmarks.matches_revision(routes.revision())) {
+        std::cerr << "Landmark index metadata is incorrect\n";
+        return 1;
+    }
+    for (atlas::NodeId from = 0; from < routes.node_count(); ++from) {
+        for (atlas::NodeId goal = 0; goal < routes.node_count(); ++goal) {
+            const auto expected = atlas::dijkstra(routes, from, goal);
+            if (landmarks.heuristic(from, goal) > expected.cost + 1e-9) {
+                std::cerr << "ALT heuristic is not admissible\n";
+                return 1;
+            }
+        }
+    }
+    try {
+        static_cast<void>(atlas::LandmarkIndex::build(routes, {0, 0}));
+        return 1;
+    } catch (const atlas::GraphError&) {
     }
     return 0;
 }
