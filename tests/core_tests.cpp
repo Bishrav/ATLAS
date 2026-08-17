@@ -410,5 +410,18 @@ int main() {
         std::cerr << "Failed routing service metrics are incorrect\n";
         return 1;
     }
+    const atlas::RoutingService budgeted_service(routes);
+    try {
+        static_cast<void>(budgeted_service.route(
+            {0, 3, atlas::RouteAlgorithm::Dijkstra, 1}));
+        return 1;
+    } catch (const atlas::RoutingServiceError&) {
+    }
+    const auto budget_metrics = budgeted_service.metrics();
+    if (budget_metrics.requests != 1 || budget_metrics.successful_requests != 0 ||
+        budget_metrics.failed_requests != 1) {
+        std::cerr << "Routing search budget handling is incorrect\n";
+        return 1;
+    }
     return 0;
 }

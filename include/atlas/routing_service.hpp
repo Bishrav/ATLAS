@@ -21,6 +21,7 @@ struct RouteRequest {
     NodeId start;
     NodeId goal;
     RouteAlgorithm algorithm;
+    std::uint64_t max_nodes_expanded = 0;
 };
 
 struct RouteResponse {

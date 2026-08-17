@@ -34,6 +34,10 @@ RouteResponse RoutingService::route(const RouteRequest& request) const {
         default:
             throw RoutingServiceError("unsupported route algorithm");
         }
+        if (request.max_nodes_expanded != 0 &&
+            response.route.metrics.nodes_expanded > request.max_nodes_expanded) {
+            throw RoutingServiceError("route search budget exceeded");
+        }
         ++metrics_.successful_requests;
         return response;
     } catch (...) {
