@@ -102,4 +102,14 @@ std::size_t LandmarkIndex::landmark_count() const noexcept {
     return landmarks_.size();
 }
 
+std::size_t LandmarkIndex::estimated_memory_bytes() const noexcept {
+    std::size_t estimate = landmarks_.size() * sizeof(NodeId) +
+                           distances_.size() * sizeof(Distances);
+    for (const Distances& distance : distances_) {
+        estimate += (distance.from_landmark.size() + distance.to_landmark.size()) *
+                    sizeof(double);
+    }
+    return estimate;
+}
+
 }  // namespace atlas

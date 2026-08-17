@@ -15,6 +15,7 @@ public:
     [[nodiscard]] double heuristic(NodeId from, NodeId goal) const;
     [[nodiscard]] bool matches_revision(std::uint64_t graph_revision) const noexcept;
     [[nodiscard]] std::size_t landmark_count() const noexcept;
+    [[nodiscard]] std::size_t estimated_memory_bytes() const noexcept;
 
 private:
     struct Distances {

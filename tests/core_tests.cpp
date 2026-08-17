@@ -265,7 +265,8 @@ int main() {
         return 1;
     }
     const auto landmarks = atlas::LandmarkIndex::build(routes, {0, 3});
-    if (landmarks.landmark_count() != 2 || !landmarks.matches_revision(routes.revision())) {
+    if (landmarks.landmark_count() != 2 || !landmarks.matches_revision(routes.revision()) ||
+        landmarks.estimated_memory_bytes() == 0) {
         std::cerr << "Landmark index metadata is incorrect\n";
         return 1;
     }

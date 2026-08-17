@@ -12,6 +12,14 @@ The memory value is an estimate of graph adjacency and coordinate container
 storage. It is not process RSS, allocator overhead, executable memory, or total
 application memory.
 
+ALT preprocessing exposes a separate logical index-size estimate based on the
+landmark identifiers, distance-vector containers, and stored double values. It
+is intended for comparing configurations with different landmark counts, not as
+a process-memory measurement.
+
+The benchmark executable prints the selected landmark count and logical ALT
+index-memory estimate before the per-algorithm rows.
+
 ## Regression comparison
 
 The `compare_benchmarks` API compares current rows with a baseline supplied by

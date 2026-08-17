@@ -43,6 +43,7 @@ route caching, map data ingestion, VRP optimization, a network API, or a UI.
 - Revision-aware LRU route cache with hit, miss, and eviction statistics
 - Deterministic ALT landmark preprocessing with directed lower-bound heuristics
 - A* routing overload using a revision-matched ALT heuristic
+- Logical ALT index-memory estimation for preprocessing comparisons
 
 ## What is not implemented
 
