@@ -27,6 +27,7 @@ add_library(atlas_core
     src/atlas/vrp_optimization.cpp
     src/atlas/vrp_multi_vehicle.cpp
     src/atlas/vrp_comparison.cpp
+    src/atlas/routing_service.cpp
 )
 target_include_directories(atlas_core PUBLIC include)
 target_compile_features(atlas_core PUBLIC cxx_std_20)

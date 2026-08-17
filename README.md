@@ -51,6 +51,7 @@ network API, or a UI.
 - Deterministic multi-vehicle first-fit capacity assignment baseline
 - Deterministic nearest-neighbor versus 2-opt cost comparison
 - Deterministic CLI route demonstration with algorithm selection
+- Transport-independent versioned routing service boundary
 
 ## What is not implemented
 
@@ -100,7 +101,7 @@ flowchart LR
 | Dynamic routing | Edge updates, closures, replay, graph revisions, cache invalidation | Partially implemented |
 | Preprocessing | ALT landmark distance index and admissible heuristic contract | Partially implemented |
 | Optimization | Versioned VRP contracts, validation, and nearest-neighbor baseline | Partially implemented |
-| Delivery layer | Versioned CLI demonstration; REST/gRPC, storage, UI | Partially implemented |
+| Delivery layer | Versioned CLI and routing service boundary; REST/gRPC, storage, UI | Partially implemented |
 
 The core algorithms do not depend on a database, network server, or UI. This
 keeps algorithm behavior testable in isolation and allows later delivery layers
@@ -247,6 +248,10 @@ demonstration, not a hosted API or UI.
 
 CLI failures use stable `error_code=... message=...` output and a non-zero exit
 status. `atlas --help` prints the available commands.
+
+The core also exposes an in-process `ATLAS_ROUTE_API_V1` service boundary with
+typed route requests, algorithm selection, graph-revision responses, and ALT
+index validation. HTTP/gRPC transport is not implemented yet.
 
 Run the controlled benchmark:
 

@@ -23,6 +23,7 @@
 #include "atlas/vrp_optimization.hpp"
 #include "atlas/vrp_multi_vehicle.hpp"
 #include "atlas/vrp_comparison.hpp"
+#include "atlas/routing_service.hpp"
 
 namespace {
 
@@ -376,6 +377,20 @@ int main() {
         comparison.relative_improvement != 17.0 / 21.0) {
         std::cerr << "VRP quality comparison is incorrect\n";
         return 1;
+    }
+    const auto service_landmarks = atlas::LandmarkIndex::build(routes, {0, 3});
+    const atlas::RoutingService service(routes, &service_landmarks);
+    const auto service_response = service.route({0, 3, atlas::RouteAlgorithm::AltAStar});
+    if (!service_response.route.reachable || service_response.route.cost != 5.0 ||
+        service_response.graph_revision != routes.revision()) {
+        std::cerr << "Routing service response is incorrect\n";
+        return 1;
+    }
+    try {
+        const atlas::RoutingService without_landmarks(routes);
+        static_cast<void>(without_landmarks.route({0, 3, atlas::RouteAlgorithm::AltAStar}));
+        return 1;
+    } catch (const atlas::RoutingServiceError&) {
     }
     return 0;
 }
