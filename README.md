@@ -55,6 +55,7 @@ optimization, a network API, or a UI.
 - Routing service request, success, and failure metrics
 - Deterministic expanded-node search budgets for routing requests
 - Transport-neutral JSON route response serialization
+- In-process REST-style `GET /v1/routes` adapter with status responses
 
 ## What is not implemented
 
@@ -261,8 +262,10 @@ index validation. The boundary also exposes request/success/failure counters for
 transport adapters. Requests may set an expanded-node budget; exceeding it
 returns a typed failure. This is deterministic protection, not wall-clock
 timeout cancellation. A transport-neutral JSON serializer exposes the API
-version, graph revision, route, cost, and search metrics. HTTP/gRPC transport
-is not implemented yet.
+version, graph revision, route, cost, and search metrics. The in-process
+REST-style adapter maps `GET /v1/routes` query parameters to the service and
+returns status-coded JSON responses. A listening HTTP/gRPC server, external
+integrations, and a UI remain explicitly planned.
 
 Run the controlled benchmark:
 
@@ -330,9 +333,9 @@ scheduling and optimality-oriented evaluation remain planned.
 
 Phase 8 portfolio finalization is complete for the current research-prototype
 scope: CLI demonstration, structured errors, an in-process versioned routing
-service, service metrics, deterministic search budgets, and JSON response
-serialization are implemented. HTTP/gRPC transport, external integrations,
-and a UI remain explicitly planned.
+service, service metrics, deterministic search budgets, JSON response
+serialization, and a REST-style request adapter are implemented. A listening
+HTTP/gRPC server, external integrations, and a UI remain explicitly planned.
 
 See [docs/operations.md](docs/operations.md) for supported verification and
 operating commands.

@@ -67,6 +67,7 @@ specification and keeps algorithm correctness ahead of infrastructure breadth.
   (implemented)
 - Deterministic search budgets and in-process service metrics (implemented)
 - Transport-neutral JSON response serialization (implemented)
+- In-process REST-style route adapter (implemented)
 - Thin REST or gRPC API (planned)
 - Optional spatial storage and cache integrations (planned)
 - Demonstration UI that exposes, but does not own, algorithm logic (planned)

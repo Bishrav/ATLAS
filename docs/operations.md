@@ -39,7 +39,8 @@ performance number is committed as a product guarantee.
 
 - This checkout requires an external CMake/C++20 toolchain for executable
   verification.
-- The routing service is in-process; HTTP and gRPC adapters are not included.
+- The routing service and REST-style request adapter are in-process; no
+  listening HTTP or gRPC server is included.
 - Search budgets limit expanded nodes deterministically; they are not wall-clock
   cancellation.
 - External traffic, map ingestion, databases, Prometheus, and a web UI are not

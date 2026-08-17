@@ -25,6 +25,7 @@
 #include "atlas/vrp_comparison.hpp"
 #include "atlas/routing_service.hpp"
 #include "atlas/route_api.hpp"
+#include "atlas/http_api.hpp"
 
 namespace {
 
@@ -430,6 +431,20 @@ int main() {
     if (budget_metrics.requests != 1 || budget_metrics.successful_requests != 0 ||
         budget_metrics.failed_requests != 1) {
         std::cerr << "Routing search budget handling is incorrect\n";
+        return 1;
+    }
+    const auto http_response = atlas::handle_route_http_request(
+        service, "GET", "/v1/routes?start=0&goal=3&algorithm=alt-a-star");
+    if (http_response.status_code != 200 || http_response.content_type != "application/json" ||
+        http_response.body.find("\"reachable\":true") == std::string::npos) {
+        std::cerr << "HTTP route adapter success response is incorrect\n";
+        return 1;
+    }
+    const auto bad_http_response =
+        atlas::handle_route_http_request(service, "POST", "/v1/routes?start=0&goal=3");
+    if (bad_http_response.status_code != 405 ||
+        bad_http_response.body.find("method_not_allowed") == std::string::npos) {
+        std::cerr << "HTTP route adapter error response is incorrect\n";
         return 1;
     }
     return 0;
