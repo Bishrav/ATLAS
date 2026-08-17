@@ -5,7 +5,7 @@ weighted graph algorithms. It is being built as an algorithm-first portfolio
 project: graph correctness, route reconstruction, reproducible evaluation, and
 measured tradeoffs come before databases, hosted APIs, or a map UI.
 
-> Current status: **Research Prototype — Phase 7 vehicle-routing contracts
+> Current status: **Research Prototype — Phase 8 demonstration quality
 > in progress.**
 
 ## Project identity
@@ -50,6 +50,7 @@ network API, or a UI.
 - Directed-graph-safe 2-opt local search for single-vehicle routes
 - Deterministic multi-vehicle first-fit capacity assignment baseline
 - Deterministic nearest-neighbor versus 2-opt cost comparison
+- Deterministic CLI route demonstration with algorithm selection
 
 ## What is not implemented
 
@@ -99,7 +100,7 @@ flowchart LR
 | Dynamic routing | Edge updates, closures, replay, graph revisions, cache invalidation | Partially implemented |
 | Preprocessing | ALT landmark distance index and admissible heuristic contract | Partially implemented |
 | Optimization | Versioned VRP contracts, validation, and nearest-neighbor baseline | Partially implemented |
-| Delivery layer | REST/gRPC, storage, cache, UI | Planned |
+| Delivery layer | Versioned CLI demonstration; REST/gRPC, storage, UI | Partially implemented |
 
 The core algorithms do not depend on a database, network server, or UI. This
 keeps algorithm behavior testable in isolation and allows later delivery layers
@@ -232,6 +233,17 @@ Verify the minimal CLI:
 ```powershell
 .\build\Release\atlas.exe --version
 ```
+
+Run the deterministic routing demonstration:
+
+```powershell
+.\build\Release\atlas.exe demo-route --algorithm dijkstra
+```
+
+Supported demonstration algorithms are `dijkstra`, `a-star`, and
+`bidirectional`. The command uses the fixed benchmark graph and prints route
+reachability, cost, search metrics, and node sequence. It is a local
+demonstration, not a hosted API or UI.
 
 Run the controlled benchmark:
 
