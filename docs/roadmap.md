@@ -63,11 +63,13 @@ specification and keeps algorithm correctness ahead of infrastructure breadth.
 
 ## Phase 8 — Backend and demonstration quality
 
-- Deterministic CLI demonstration (implemented)
-- Thin REST or gRPC API
-- Structured errors, timeouts, and observability
-- Optional spatial storage and cache integrations
-- Demonstration UI that exposes, but does not own, algorithm logic
+- Deterministic CLI demonstration, structured errors, and service boundary
+  (implemented)
+- Deterministic search budgets and in-process service metrics (implemented)
+- Transport-neutral JSON response serialization (implemented)
+- Thin REST or gRPC API (planned)
+- Optional spatial storage and cache integrations (planned)
+- Demonstration UI that exposes, but does not own, algorithm logic (planned)
 
 ## Status rule
 

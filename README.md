@@ -5,8 +5,8 @@ weighted graph algorithms. It is being built as an algorithm-first portfolio
 project: graph correctness, route reconstruction, reproducible evaluation, and
 measured tradeoffs come before databases, hosted APIs, or a map UI.
 
-> Current status: **Research Prototype — Phase 8 demonstration quality
-> in progress.**
+> Current status: **Research Prototype — Phase 8 portfolio finalization
+> complete; production delivery layers remain planned.**
 
 ## Project identity
 
@@ -18,8 +18,8 @@ ATLAS is intended to answer a focused engineering question:
 
 The project currently implements a deterministic in-memory foundation, dynamic
 graph revisions, route caching, and four shortest-path engines. It does **not**
-yet provide external traffic ingestion, map data ingestion, VRP optimization, a
-network API, or a UI.
+yet provide external traffic ingestion, map data ingestion, full VRP
+optimization, a network API, or a UI.
 
 ## What is implemented
 
@@ -62,9 +62,9 @@ The following are planned, not current capabilities:
 
 - OpenStreetMap or other road-network ingestion
 - Live traffic-provider integration and external update ingestion
-- Route-service integration beyond the current cache component
-- Contraction Hierarchies and preprocessing/query tradeoff evaluation
-- TSP and VRP optimization
+- External route-service integration beyond the current in-process boundary
+- Contraction Hierarchies pending representative benchmark evidence
+- Full TSP/VRP optimization and optimality guarantees
 - PostgreSQL/PostGIS, Redis, REST, or gRPC integration
 - Prometheus/Grafana observability
 - Web or map-based user interface
@@ -86,9 +86,12 @@ flowchart LR
     M --> B[Benchmark harness]
     B --> C[Correctness comparison]
     B --> E[Local measurements]
-    V -. planned .-> U[Dynamic update layer]
-    U -. planned .-> O[Route optimizer]
-    O -. planned .-> API[API and UI]
+    V --> U[Dynamic update layer]
+    U --> O[Route optimizer]
+    O --> S[In-process routing service]
+    S --> API[Versioned JSON response]
+    S --> CLI[CLI demonstration]
+    O -. planned .-> UI[HTTP/gRPC and UI]
 ```
 
 ### Component boundaries
@@ -288,7 +291,7 @@ src/atlas/       Graph, parser, routing, benchmark, and snapshot implementations
 apps/            atlas CLI and atlas_benchmark entry points
 tests/           CTest executable with contract, algorithm, and benchmark checks
 tests/fixtures/  Deterministic graph input fixture
-docs/            Roadmap and benchmark methodology
+docs/            Roadmap, operations, decisions, and benchmark methodology
 .github/         Continuous integration workflow
 CMakeLists.txt   C++20 build and test configuration
 ```
@@ -299,9 +302,8 @@ The staged plan is documented in [docs/roadmap.md](docs/roadmap.md).
 
 ### Phase 4 — Benchmarking and evaluation
 
-The current phase is implemented in the repository, subject to CI execution
-on a C++ toolchain. The next small step is to preserve benchmark reports with
-environment metadata before using regression thresholds.
+Phase 4 benchmarking and evaluation are implemented in the repository. Local
+executable verification still requires a C++ toolchain or a successful CI run.
 
 ### Phase 5 — Dynamic routing and caching
 
@@ -320,16 +322,20 @@ evidence justifies its preprocessing and update complexity. See [ADR 0001](docs/
 
 ### Phase 7 — Vehicle-routing optimization
 
-The first Phase 7 milestone adds versioned depot, delivery, vehicle-capacity,
-and optional time-window contracts with graph-aware validation. A deterministic
-single-vehicle nearest-neighbor baseline now computes graph route costs. Its
-evaluation reports delivery coverage, route cost, route size, and capacity
-utilization without claiming optimality. Directed 2-opt recomputes graph legs
-after delivery-order swaps and compares its result with the greedy baseline. A
-multi-vehicle first-fit capacity assignment baseline now builds one route per
-vehicle. Single-vehicle cost comparisons report absolute and relative
-improvement from 2-opt without claiming optimality or runtime performance.
-Time-window scheduling and runtime benchmarking remain planned.
+Phase 7 includes versioned VRP contracts, nearest-neighbor and multi-vehicle
+baselines, directed 2-opt, and deterministic cost comparison. Full time-window
+scheduling and optimality-oriented evaluation remain planned.
+
+### Phase 8 — Backend and demonstration quality
+
+Phase 8 portfolio finalization is complete for the current research-prototype
+scope: CLI demonstration, structured errors, an in-process versioned routing
+service, service metrics, deterministic search budgets, and JSON response
+serialization are implemented. HTTP/gRPC transport, external integrations,
+and a UI remain explicitly planned.
+
+See [docs/operations.md](docs/operations.md) for supported verification and
+operating commands.
 
 ### Phase 8 — Backend and demonstration quality
 
