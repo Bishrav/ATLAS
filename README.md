@@ -41,6 +41,7 @@ route caching, map data ingestion, VRP optimization, a network API, or a UI.
 - Replayable graph update events and explicit cache invalidation
 - Revision-aware LRU route cache with hit, miss, and eviction statistics
 - Deterministic ALT landmark preprocessing with directed lower-bound heuristics
+- A* routing overload using a revision-matched ALT heuristic
 
 ## What is not implemented
 
@@ -49,7 +50,7 @@ The following are planned, not current capabilities:
 - OpenStreetMap or other road-network ingestion
 - Live traffic-provider integration and external update ingestion
 - Route-service integration beyond the current cache component
-- A* integration with ALT heuristics and Contraction Hierarchies
+- Contraction Hierarchies and preprocessing/query tradeoff evaluation
 - TSP and VRP optimization
 - PostgreSQL/PostGIS, Redis, REST, or gRPC integration
 - Prometheus/Grafana observability
@@ -276,10 +277,10 @@ state. Explicit invalidation can remove entries older than a selected revision.
 
 ### Phase 6 — Advanced preprocessing
 
-The first Phase 6 milestone adds deterministic ALT landmark preprocessing. The
-index stores landmark-to-node and node-to-landmark distances, captures the graph
-revision used to build it, and exposes the directed ALT lower bound. Integrating
-that bound into A* and evaluating preprocessing/query tradeoffs remain planned.
+Phase 6 now includes deterministic ALT landmark preprocessing and an A* overload
+that uses its directed lower bound when the index matches the graph revision.
+Contraction Hierarchies and preprocessing/query tradeoff evaluation remain
+planned.
 
 ### Phase 7 — Vehicle-routing optimization
 

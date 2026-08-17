@@ -278,6 +278,19 @@ int main() {
             }
         }
     }
+    const auto alt_route = atlas::a_star(routes, 0, 3, landmarks);
+    const auto baseline_route = atlas::dijkstra(routes, 0, 3);
+    if (!alt_route.reachable || alt_route.cost != baseline_route.cost ||
+        alt_route.nodes != baseline_route.nodes) {
+        std::cerr << "ALT A* result is incorrect\n";
+        return 1;
+    }
+    routes.update_edge_weight(0, 1, routes.neighbors(0)[0].weight);
+    try {
+        static_cast<void>(atlas::a_star(routes, 0, 3, landmarks));
+        return 1;
+    } catch (const atlas::GraphError&) {
+    }
     try {
         static_cast<void>(atlas::LandmarkIndex::build(routes, {0, 0}));
         return 1;

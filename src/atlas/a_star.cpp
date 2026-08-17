@@ -8,21 +8,12 @@
 #include <utility>
 
 namespace atlas {
+namespace {
 
-double euclidean_distance(Coordinate from, Coordinate to) noexcept {
-    const double x = from.x - to.x;
-    const double y = from.y - to.y;
-    return std::sqrt(x * x + y * y);
-}
-
-PathResult a_star(const Graph& graph, NodeId start, NodeId goal) {
+template <typename Heuristic>
+PathResult a_star_search(const Graph& graph, NodeId start, NodeId goal, Heuristic heuristic) {
     if (!graph.contains(start) || !graph.contains(goal)) {
         throw GraphError("path endpoint does not exist");
-    }
-    const auto start_coordinate = graph.coordinate(start);
-    const auto goal_coordinate = graph.coordinate(goal);
-    if (!start_coordinate || !goal_coordinate) {
-        throw GraphError("A* requires coordinates for path endpoints");
     }
 
     constexpr double infinity = std::numeric_limits<double>::infinity();
@@ -32,19 +23,14 @@ PathResult a_star(const Graph& graph, NodeId start, NodeId goal) {
     using QueueEntry = std::pair<double, NodeId>;
     std::priority_queue<QueueEntry, std::vector<QueueEntry>, std::greater<>> frontier;
     cost[start] = 0.0;
-    frontier.push({euclidean_distance(*start_coordinate, *goal_coordinate), start});
+    frontier.push({heuristic(start), start});
     SearchMetrics metrics;
     ++metrics.queue_pushes;
 
     while (!frontier.empty()) {
         const auto [priority, current] = frontier.top();
         frontier.pop();
-        const auto current_coordinate = graph.coordinate(current);
-        if (!current_coordinate) {
-            throw GraphError("A* requires coordinates for every visited node");
-        }
-        const double expected_priority =
-            cost[current] + euclidean_distance(*current_coordinate, *goal_coordinate);
+        const double expected_priority = cost[current] + heuristic(current);
         if (priority != expected_priority) {
             continue;
         }
@@ -57,14 +43,7 @@ PathResult a_star(const Graph& graph, NodeId start, NodeId goal) {
             if (candidate < cost[edge.to]) {
                 cost[edge.to] = candidate;
                 parent[edge.to] = current;
-                const auto next_coordinate = graph.coordinate(edge.to);
-                if (!next_coordinate) {
-                    throw GraphError("A* requires coordinates for every visited node");
-                }
-                frontier.push({
-                    candidate + euclidean_distance(*next_coordinate, *goal_coordinate),
-                    edge.to,
-                });
+                frontier.push({candidate + heuristic(edge.to), edge.to});
                 ++metrics.queue_pushes;
             }
         }
@@ -82,6 +61,42 @@ PathResult a_star(const Graph& graph, NodeId start, NodeId goal) {
     }
     std::reverse(path.begin(), path.end());
     return {true, cost[goal], path, metrics};
+}
+
+}  // namespace
+
+double euclidean_distance(Coordinate from, Coordinate to) noexcept {
+    const double x = from.x - to.x;
+    const double y = from.y - to.y;
+    return std::sqrt(x * x + y * y);
+}
+
+PathResult a_star(const Graph& graph, NodeId start, NodeId goal) {
+    if (!graph.contains(start) || !graph.contains(goal)) {
+        throw GraphError("path endpoint does not exist");
+    }
+    const auto start_coordinate = graph.coordinate(start);
+    const auto goal_coordinate = graph.coordinate(goal);
+    if (!start_coordinate || !goal_coordinate) {
+        throw GraphError("A* requires coordinates for path endpoints");
+    }
+
+    return a_star_search(graph, start, goal, [&](NodeId node) {
+        const auto coordinate = graph.coordinate(node);
+        if (!coordinate) {
+            throw GraphError("A* requires coordinates for every visited node");
+        }
+        return euclidean_distance(*coordinate, *goal_coordinate);
+    });
+}
+
+PathResult a_star(const Graph& graph, NodeId start, NodeId goal,
+                  const LandmarkIndex& landmarks) {
+    if (!landmarks.matches_revision(graph.revision())) {
+        throw GraphError("ALT landmark index does not match graph revision");
+    }
+    return a_star_search(graph, start, goal,
+                         [&](NodeId node) { return landmarks.heuristic(node, goal); });
 }
 
 }  // namespace atlas
