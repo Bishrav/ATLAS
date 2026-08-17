@@ -24,6 +24,7 @@
 #include "atlas/vrp_multi_vehicle.hpp"
 #include "atlas/vrp_comparison.hpp"
 #include "atlas/routing_service.hpp"
+#include "atlas/route_api.hpp"
 
 namespace {
 
@@ -384,6 +385,14 @@ int main() {
     if (!service_response.route.reachable || service_response.route.cost != 5.0 ||
         service_response.graph_revision != routes.revision()) {
         std::cerr << "Routing service response is incorrect\n";
+        return 1;
+    }
+    const auto serialized_response = atlas::serialize_route_response(service_response);
+    if (serialized_response.find("\"api_version\":\"ATLAS_ROUTE_API_V1\"") ==
+            std::string::npos ||
+        serialized_response.find("\"reachable\":true") == std::string::npos ||
+        serialized_response.find("\"nodes\":[0,2,1,3]") == std::string::npos) {
+        std::cerr << "Route API serialization is incorrect\n";
         return 1;
     }
     const auto service_metrics = service.metrics();

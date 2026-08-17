@@ -54,6 +54,7 @@ network API, or a UI.
 - Transport-independent versioned routing service boundary
 - Routing service request, success, and failure metrics
 - Deterministic expanded-node search budgets for routing requests
+- Transport-neutral JSON route response serialization
 
 ## What is not implemented
 
@@ -256,7 +257,9 @@ typed route requests, algorithm selection, graph-revision responses, and ALT
 index validation. The boundary also exposes request/success/failure counters for
 transport adapters. Requests may set an expanded-node budget; exceeding it
 returns a typed failure. This is deterministic protection, not wall-clock
-timeout cancellation. HTTP/gRPC transport is not implemented yet.
+timeout cancellation. A transport-neutral JSON serializer exposes the API
+version, graph revision, route, cost, and search metrics. HTTP/gRPC transport
+is not implemented yet.
 
 Run the controlled benchmark:
 
