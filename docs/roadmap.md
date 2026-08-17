@@ -48,9 +48,10 @@ specification and keeps algorithm correctness ahead of infrastructure breadth.
 
 ## Phase 6 — Advanced preprocessing
 
-- ALT/landmarks
-- Contraction Hierarchies if preprocessing tradeoffs justify it
-- Shortcut correctness and index-size evaluation
+- ALT/landmarks, ALT A* integration, and correctness benchmarking (implemented)
+- Logical ALT index-size estimation (implemented)
+- Contraction Hierarchies deferred pending representative benchmark evidence
+  (see [ADR 0001](decisions/0001-alt-before-contraction-hierarchies.md))
 
 ## Phase 7 — Vehicle routing optimization
 

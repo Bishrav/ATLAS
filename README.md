@@ -5,7 +5,7 @@ weighted graph algorithms. It is being built as an algorithm-first portfolio
 project: graph correctness, route reconstruction, reproducible evaluation, and
 measured tradeoffs come before databases, hosted APIs, or a map UI.
 
-> Current status: **Research Prototype — Phase 5 dynamic routing and caching
+> Current status: **Research Prototype — Phase 6 advanced preprocessing
 > in progress.**
 
 ## Project identity
@@ -16,9 +16,10 @@ ATLAS is intended to answer a focused engineering question:
 > query workload, and can their correctness and tradeoffs be demonstrated with
 > reproducible evidence?
 
-The project currently implements the deterministic in-memory foundation and
-three shortest-path engines. It does **not** yet provide traffic updates,
-route caching, map data ingestion, VRP optimization, a network API, or a UI.
+The project currently implements a deterministic in-memory foundation, dynamic
+graph revisions, route caching, and four shortest-path engines. It does **not**
+yet provide external traffic ingestion, map data ingestion, VRP optimization, a
+network API, or a UI.
 
 ## What is implemented
 
@@ -279,11 +280,10 @@ state. Explicit invalidation can remove entries older than a selected revision.
 
 ### Phase 6 — Advanced preprocessing
 
-Phase 6 now includes deterministic ALT landmark preprocessing and an A* overload
-that uses its directed lower bound when the index matches the graph revision.
-The controlled benchmark now measures ALT A* alongside the existing algorithms
-and checks its route costs against Dijkstra. Broader preprocessing/query tradeoff
-evaluation and Contraction Hierarchies remain planned.
+Phase 6 advanced preprocessing is implemented for ALT landmark indexing, ALT A*
+integration, correctness benchmarking, and logical index-size estimation.
+Contraction Hierarchies is explicitly deferred until representative benchmark
+evidence justifies its preprocessing and update complexity. See [ADR 0001](docs/decisions/0001-alt-before-contraction-hierarchies.md).
 
 ### Phase 7 — Vehicle-routing optimization
 
