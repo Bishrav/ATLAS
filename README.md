@@ -46,6 +46,7 @@ network API, or a UI.
 - A* routing overload using a revision-matched ALT heuristic
 - Logical ALT index-memory estimation for preprocessing comparisons
 - Deterministic single-vehicle nearest-neighbor VRP baseline
+- Deterministic VRP baseline evaluation metrics
 
 ## What is not implemented
 
@@ -290,9 +291,10 @@ evidence justifies its preprocessing and update complexity. See [ADR 0001](docs/
 
 The first Phase 7 milestone adds versioned depot, delivery, vehicle-capacity,
 and optional time-window contracts with graph-aware validation. A deterministic
-single-vehicle nearest-neighbor baseline now computes graph route costs; multi-
-vehicle assignment, time-window scheduling, and quality evaluation remain
-planned.
+single-vehicle nearest-neighbor baseline now computes graph route costs. Its
+evaluation reports delivery coverage, route cost, route size, and capacity
+utilization without claiming optimality. Multi-vehicle assignment, time-window
+scheduling, and optimization comparisons remain planned.
 
 ### Phase 8 — Backend and demonstration quality
 

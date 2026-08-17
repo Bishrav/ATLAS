@@ -19,6 +19,7 @@
 #include "atlas/landmark.hpp"
 #include "atlas/vrp.hpp"
 #include "atlas/vrp_baseline.hpp"
+#include "atlas/vrp_evaluation.hpp"
 
 namespace {
 
@@ -324,6 +325,13 @@ int main() {
         vrp_route.nodes != std::vector<atlas::NodeId>{0, 2, 1, 3} ||
         vrp_route.total_cost != 5.0) {
         std::cerr << "Nearest-neighbor VRP route is incorrect\n";
+        return 1;
+    }
+    const auto evaluation = atlas::evaluate_nearest_neighbor(routes, baseline_problem);
+    if (evaluation.algorithm != "nearest_neighbor" || evaluation.requested_deliveries != 1 ||
+        evaluation.delivered_deliveries != 1 || evaluation.route_node_count != 4 ||
+        evaluation.total_cost != 5.0 || evaluation.capacity_utilization != 0.5) {
+        std::cerr << "VRP baseline evaluation is incorrect\n";
         return 1;
     }
     return 0;
